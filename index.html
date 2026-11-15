@@ -471,16 +471,17 @@ function dealCards(){
     el.style.transition="none";
     el.style.transform=`translate(${24-b.left}px,${24-b.top}px) rotate(${-6+i*2}deg)`;
   });
-  requestAnimationFrame(()=>requestAnimationFrame(()=>opts.forEach((_,i)=>{
+  void document.body.offsetHeight; // commit the stacked position before animating
+  opts.forEach((_,i)=>{
     const el=$("fc"+i);
-    el.style.transition=`transform .75s cubic-bezier(.2,.9,.25,1.05) ${.35+i*.14}s`;
+    el.style.transition=`transform .75s cubic-bezier(.2,.9,.25,1.05) ${.25+i*.12}s`;
     el.style.transform="none";
-    setTimeout(()=>el.classList.add("ready"),1100+i*140);
-  })));
+    el.classList.add("ready");
+  });
 }
-let choosing=false;
 function chooseCard(i){
-  if(S.stage!=="needCard"||!$("fc"+i).classList.contains("ready"))return;
+  if(S.stage!=="needCard")return;
+  S.deal.forEach((_,j)=>{const e=$("fc"+j);e.style.transition="none";e.style.transform="none"}); // snap into place if still dealing
   const c=S.deal[i];S.card=c;S.usedCards.push(c.t);S.stage="ready";S.cardIdx++;
   $("fc"+i).classList.add("flipped","chosen");
   $("tableTitle").textContent=c.t;
@@ -488,7 +489,7 @@ function chooseCard(i){
   setTimeout(()=>$("tableBtn").style.visibility="visible",1100);
   if(c.bonus)setTimeout(()=>setBudget(S.budget+c.bonus),900);
 }
-function closeTable(){$("table").classList.remove("on");renderPanel()}
+function closeTable(){$("table").classList.remove("on");$("deck").innerHTML="";renderPanel()}
 
 /* ---------- POSITIONS ---------- */
 const saleVal=p=>Math.round(p.val*(S.card&&S.card.sale||1));
