@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rebuild XI</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Anton&family=Barlow+Condensed:wght@500;600;700;800&display=swap');
+:root{--bg:#000;--panel:#0b0b0b;--line:#222;--text:#fff;--muted:#8a8a8a;--accent:#d4ff3a;--money:#3affa0;--mgmt:#5aa8ff;--bad:#ff5a5a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:#000;color:#fff;font-family:Inter,system-ui,sans-serif;overflow:hidden}
+button{font-family:inherit;cursor:pointer}
+.screen{display:none;position:fixed;inset:0}
+.screen.on{display:flex}
+.btn{background:#fff;color:#000;border:0;padding:15px 34px;border-radius:999px;font-weight:700;font-size:14px;letter-spacing:.06em;transition:transform .15s,opacity .15s}
+.btn:hover{transform:scale(1.04)}
+.btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.btn.ghost{background:rgba(0,0,0,.5);color:#fff;border:1px solid rgba(255,255,255,.25);backdrop-filter:blur(6px)}
+.btn.acc{background:var(--accent)}
+.kicker{letter-spacing:.3em;font-size:11px;color:var(--muted);font-weight:500}
+
+/* HOME */
+#home{background:url(hero.jpg) center/cover no-repeat;flex-direction:column;justify-content:flex-end;padding:0 6vw 8vh}
+#home::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.9) 0%,rgba(0,0,0,.55) 38%,rgba(0,0,0,0) 65%),linear-gradient(0deg,#000 0%,rgba(0,0,0,0) 45%)}
+#home>*{position:relative}
+.brand{position:absolute!important;top:26px;left:6vw;font-family:Anton,sans-serif;font-size:24px;letter-spacing:.02em}
+.brand span,.logo span{color:var(--accent)}
+.h-kick{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:.28em;color:var(--accent);text-transform:uppercase}
+.hero-t{font-family:Anton,sans-serif;font-size:clamp(56px,8.5vw,124px);line-height:.9;text-transform:uppercase;margin:10px 0 16px;letter-spacing:.005em}
+.hero-s{font-family:'Barlow Condensed',sans-serif;font-weight:500;color:#c9c9c9;max-width:440px;line-height:1.35;font-size:19px;margin-bottom:26px}
+.today{display:flex;align-items:stretch;margin-bottom:26px;width:max-content;font-family:'Barlow Condensed',sans-serif;text-transform:uppercase}
+.today .lbl{background:var(--accent);color:#000;font-weight:800;font-size:14px;letter-spacing:.14em;padding:8px 14px;display:flex;align-items:center;clip-path:polygon(0 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+.today .val{background:#fff;color:#000;padding:8px 20px 8px 16px;margin-left:-6px;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%);display:flex;align-items:baseline;gap:10px}
+.today .val b{font-weight:800;font-size:22px;letter-spacing:.02em}
+.today .val small{font-weight:600;font-size:14px;color:#555;letter-spacing:.06em}
+.home-btns{display:flex;gap:14px;align-items:center}
+.gbtn{font-family:'Barlow Condensed',sans-serif;font-weight:800;text-transform:uppercase;font-size:22px;letter-spacing:.06em;border:0;padding:14px 34px 13px;
+  clip-path:polygon(14px 0,100% 0,calc(100% - 14px) 100%,0 100%);transition:transform .12s,filter .12s;display:flex;align-items:center;gap:12px}
+.gbtn:hover{transform:translateY(-2px);filter:brightness(1.1)}
+.gbtn:active{transform:translateY(1px)}
+.gbtn.p{background:var(--accent);color:#000;box-shadow:inset 0 -4px 0 rgba(0,0,0,.25)}
+.gbtn.p .ar{font-size:18px}
+.gbtn.s{background:rgba(255,255,255,.08);color:#fff;font-size:18px;padding:12px 28px 11px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.35);backdrop-filter:blur(6px)}
+.gbtn.s:hover{background:rgba(255,255,255,.18)}
+
+/* CALENDAR */
+#archive{flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at top,#111,#000 60%);padding:24px}
+.cal{width:min(460px,100%);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px}
+.cal h2{font-size:24px;font-weight:900;margin:8px 0 18px}
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.grid .h{font-size:10px;color:var(--muted);text-align:center;letter-spacing:.1em;padding-bottom:4px}
+.day{aspect-ratio:1;border-radius:10px;border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:13px;color:#444}
+.day.has{color:#fff;cursor:pointer;background:#111}
+.day.has:hover{border-color:#fff}
+.day.today{border-color:var(--accent)}
+.day.done::after{content:"";width:5px;height:5px;border-radius:50%;background:var(--accent);margin-top:3px}
+.day.lock{cursor:not-allowed;opacity:.5}
+.cal-note{color:var(--muted);font-size:12px;margin-top:16px;line-height:1.5}
+.cal-info{margin-top:14px;font-size:14px;min-height:20px}
+
+/* SHARED GAME TYPE */
+.cond{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase}
+.disp{font-family:Anton,sans-serif;text-transform:uppercase;letter-spacing:.01em}
+.topbar{position:absolute;top:0;left:0;right:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:18px 28px;border-bottom:1px solid var(--line);background:#000;z-index:2}
+.logo{font-family:Anton,sans-serif;font-size:20px;cursor:pointer;letter-spacing:.02em}
+.club{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;font-weight:600;letter-spacing:.12em;color:var(--muted);font-size:14px;text-align:right}
+.club b{color:#fff}
+.bud{text-align:center}
+.bud small{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.3em;font-size:11px;color:var(--muted)}
+.bud div{font-family:Anton,sans-serif;font-size:34px;color:var(--money);line-height:1.1}
+.bud div.flash{animation:flash .6s}
+@keyframes flash{30%{transform:scale(1.15)}}
+.gbtn.k{background:#fff;color:#000;box-shadow:inset 0 -4px 0 rgba(0,0,0,.2)}
+.gbtn.r{background:var(--bad);color:#000;box-shadow:inset 0 -4px 0 rgba(0,0,0,.25)}
+.gbtn:disabled{opacity:.3;cursor:not-allowed;transform:none;filter:none}
+
+/* MANAGER SCREEN */
+#mgrScr{background:#000;flex-direction:column;align-items:center;justify-content:center;padding:100px 30px 40px}
+.mstage{width:min(1100px,100%);display:flex;flex-direction:column;align-items:center;gap:34px}
+.mlabel{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.3em;color:var(--accent);font-size:14px;text-transform:uppercase}
+.mcur{display:flex;align-items:center;gap:44px;width:100%;justify-content:center}
+.mcard{width:300px;border:1px solid #2a2a2a;border-radius:4px;padding:28px;background:linear-gradient(160deg,#111,#050505);position:relative}
+.mcard .ovr{font-family:Anton,sans-serif;font-size:72px;line-height:1}
+.mcard .role{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.2em;color:var(--muted);font-size:13px;margin-top:2px}
+.mcard .nm{font-family:Anton,sans-serif;font-size:34px;text-transform:uppercase;line-height:1;margin:26px 0 10px}
+.mcard .worth{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.mcard .worth b{color:var(--money)}
+.mcard.sold{opacity:.35}
+.mcard.sold::after{content:"SOLD";position:absolute;top:24px;right:-10px;background:var(--bad);color:#000;font-family:Anton,sans-serif;font-size:22px;padding:4px 16px;transform:rotate(8deg)}
+.mact{display:flex;flex-direction:column;gap:14px}
+.mopts{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%}
+.mo{border:1px solid #2a2a2a;border-radius:4px;padding:24px;background:#0a0a0a;cursor:pointer;transition:all .18s;opacity:0;transform:translateY(20px);animation:up .45s forwards;text-align:left;color:#fff}
+.mo:nth-child(2){animation-delay:.08s}.mo:nth-child(3){animation-delay:.16s}
+@keyframes up{to{opacity:1;transform:none}}
+.mo:hover{border-color:var(--accent);background:#111}
+.mo.no{opacity:.3!important;cursor:not-allowed}
+.mo .tier{font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.22em;font-size:12px;color:var(--muted)}
+.mo .ovr{font-family:Anton,sans-serif;font-size:48px;line-height:1;margin-top:14px}
+.mo .nm{font-family:Anton,sans-serif;font-size:26px;text-transform:uppercase;line-height:1.05;margin:10px 0 4px}
+.mo .from{font-family:'Barlow Condensed',sans-serif;font-size:15px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.mo .price{font-family:Anton,sans-serif;font-size:26px;color:var(--money);margin-top:18px}
+
+/* LINEUP SCREEN */
+#game{background:#000}
+.gbody{position:absolute;top:79px;left:0;right:0;bottom:0;display:flex}
+.field{flex:1;display:flex;align-items:center;justify-content:center;padding:22px;min-width:0}
+.pitch{position:relative;height:100%;aspect-ratio:68/100;max-width:100%;border-radius:6px;overflow:hidden;
+ background:repeating-linear-gradient(0deg,#0b2414 0 10%,#0d2b18 10% 20%);border:2px solid rgba(255,255,255,.22)}
+.ln{position:absolute;border:2px solid rgba(255,255,255,.22)}
+.half{left:0;right:0;top:50%;border-width:2px 0 0 0!important}
+.circ{width:26%;aspect-ratio:1;border-radius:50%;left:37%;top:50%;transform:translateY(-50%)}
+.bb{left:22%;right:22%;bottom:-2px;height:16%}.bt{left:22%;right:22%;top:-2px;height:16%}
+.slot{position:absolute;transform:translate(-50%,-50%);width:110px;text-align:center;animation:pop .4s cubic-bezier(.2,.9,.3,1.3)}
+@keyframes pop{from{transform:translate(-50%,-50%) scale(.3);opacity:0}}
+.disc{width:52px;height:52px;border-radius:50%;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-family:Anton,sans-serif;font-size:20px;border:2px solid #fff;background:#000}
+.slot.new .disc{border-color:var(--accent);color:var(--accent)}
+.slot.bench .disc{border-color:#888}
+.slot .nm{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:14px;background:rgba(0,0,0,.8);padding:2px 7px;display:inline-block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.03em}
+
+.panel{width:420px;border-left:1px solid var(--line);padding:24px;display:flex;flex-direction:column;gap:16px;overflow:auto}
+.prow{display:flex;gap:12px}
+.mini{flex:1;border:1px solid var(--line);border-radius:4px;padding:12px 14px}
+.mini small{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.2em;color:var(--muted);font-size:11px}
+.mini b{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:18px}
+.mini .o{font-family:Anton,sans-serif;font-size:18px;float:right}
+.cardslot{border:1px dashed #333;border-radius:4px;padding:14px;min-height:96px}
+.cardslot.has{border:1px solid var(--mgmt);background:linear-gradient(160deg,#07121f,#000)}
+.cardslot .t{font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.22em;color:var(--mgmt);font-size:11px}
+.cardslot h4{font-family:Anton,sans-serif;font-size:24px;text-transform:uppercase;margin:6px 0 4px}
+.cardslot p{color:var(--muted);font-size:13px;line-height:1.4}
+.cardslot .empty{color:#444;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.2em;font-size:12px;height:66px;display:flex;align-items:center;justify-content:center}
+.center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center}
+.center .gbtn{justify-content:center}
+.poslbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.3em;color:var(--muted);font-size:12px}
+.posname{font-family:Anton,sans-serif;font-size:56px;line-height:.95;text-transform:uppercase;animation:up .4s forwards}
+.pcard{width:100%;border:1px solid #2a2a2a;border-radius:4px;padding:18px 20px;display:flex;align-items:center;gap:16px;background:linear-gradient(160deg,#111,#050505);text-align:left}
+.pcard .o{font-family:Anton,sans-serif;font-size:44px;line-height:1}
+.pcard .i{flex:1}
+.pcard .i b{display:block;font-family:Anton,sans-serif;font-size:24px;text-transform:uppercase;line-height:1.05}
+.pcard .i small{font-family:'Barlow Condensed',sans-serif;font-weight:600;color:var(--muted);font-size:14px;text-transform:uppercase;letter-spacing:.06em}
+.pcard .v{font-family:Anton,sans-serif;font-size:22px;color:var(--money)}
+.kbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%}
+.kbtns .gbtn{justify-content:center;font-size:20px}
+.opts{display:flex;flex-direction:column;gap:10px;width:100%}
+.opt{display:flex;align-items:center;gap:14px;border:1px solid #2a2a2a;border-radius:4px;padding:12px 16px;background:#0a0a0a;cursor:pointer;text-align:left;color:#fff;opacity:0;transform:translateX(20px);animation:upx .4s forwards;transition:border-color .15s,background .15s}
+.opt:nth-child(2){animation-delay:.07s}.opt:nth-child(3){animation-delay:.14s}.opt:nth-child(4){animation-delay:.21s}
+@keyframes upx{to{opacity:1;transform:none}}
+.opt:hover{border-color:var(--accent);background:#111}
+.opt.no{opacity:.3!important;cursor:not-allowed}
+.opt .o{font-family:Anton,sans-serif;font-size:30px;width:44px}
+.opt .i{flex:1}
+.opt .i small{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.2em;font-size:10px;color:var(--muted)}
+.opt .i b{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;text-transform:uppercase;line-height:1.1}
+.opt .i span{font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.opt .p{font-family:Anton,sans-serif;font-size:20px;color:var(--money)}
+.opt.bench{border-style:dashed}
+.opt.bench .p{color:#fff}
+.prog{display:flex;gap:4px}
+.prog i{flex:1;height:3px;background:#222}.prog i.d{background:#fff}.prog i.c{background:var(--accent)}
+
+/* CARD TABLE */
+.table{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:20;padding:20px}
+.table.on{display:flex}
+.table h2{font-family:Anton,sans-serif;text-transform:uppercase;font-size:clamp(30px,4vw,48px);margin:10px 0 34px;text-align:center}
+.deck{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.fc{width:200px;height:286px;perspective:1000px}
+.fc-in{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.2,.8,.2,1),translate .2s;transform-style:preserve-3d;cursor:pointer}
+.fc.ready:not(.flipped):not(.dim) .fc-in:hover{translate:0 -14px}
+.fc.flipped .fc-in{transform:rotateY(180deg);cursor:default}
+.fc.dim{filter:brightness(.35)}
+.fc.chosen .front{border-color:var(--accent);box-shadow:0 0 34px rgba(212,255,58,.3)}
+.face{position:absolute;inset:0;border-radius:6px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;border:1px solid #333;text-align:center}
+.back{background:repeating-linear-gradient(45deg,#0b0b0b 0 10px,#121212 10px 20px)}
+.back .em{font-family:Anton,sans-serif;font-size:44px;color:#2c2c2c;border:2px solid #262626;padding:6px 14px}
+.back .tag{position:absolute;bottom:18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:.3em;color:#555}
+.front{background:#000;transform:rotateY(180deg)}
+.front .type{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:.3em;color:var(--mgmt);margin-bottom:16px}
+.front h3{font-family:Anton,sans-serif;text-transform:uppercase;font-size:28px;line-height:1.02}
+.front p{color:var(--muted);font-size:13px;margin-top:12px;line-height:1.45}
+#tableBtn{margin-top:36px;visibility:hidden}
+
+/* END */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:30;padding:20px}
+.ov.on{display:flex}
+.end{text-align:center;display:flex;flex-direction:column;align-items:center}
+.end .big{font-family:Anton,sans-serif;font-size:clamp(100px,16vw,180px);line-height:1}
+.grade{font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.2em;font-size:16px;background:var(--accent);color:#000;padding:6px 16px;margin:10px 0 18px;text-transform:uppercase}
+.cmp{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:28px}.cmp b{color:#fff}
+
+@media (max-width:900px){.panel{width:340px}.slot{width:86px}.disc{width:42px;height:42px;font-size:16px}.mopts{grid-template-columns:1fr}.mcur{flex-direction:column;gap:20px}}
+</style>
+</head>
+<body>
+
+<!-- HOME -->
+<section id="home" class="screen on">
+  <div class="brand">REBUILD<span>XI</span></div>
+  <div class="h-kick">Challenge of the day</div>
+  <div class="hero-t">Who do<br>we pick?</div>
+  <p class="hero-s">Take over a club. Sell who you don't want, draw management cards, spend the budget, and rebuild the starting XI.</p>
+  <div class="today"><div class="lbl">Today</div><div class="val"><b id="todayClub"></b><small id="todayDate"></small></div></div>
+  <div class="home-btns">
+    <button class="gbtn p" onclick="startChallenge(TODAY)">Start daily challenge <span class="ar">▶</span></button>
+    <button class="gbtn s" onclick="openArchive()">Past challenges</button>
+  </div>
+</section>
+
+<!-- ARCHIVE -->
+<section id="archive" class="screen">
+  <div class="cal">
+    <div style="display:flex;justify-content:space-between;align-items:center"><div class="kicker">ARCHIVE</div><button class="x" onclick="goHome()">×</button></div>
+    <h2 id="calTitle"></h2>
+    <div class="grid" id="calGrid"></div>
+    <div class="cal-info" id="calInfo"></div>
+    <p class="cal-note" id="calNote"></p>
+  </div>
+</section>
+
+<!-- MANAGER SCREEN -->
+<section id="mgrScr" class="screen">
+  <div class="topbar">
+    <div class="logo" onclick="goHome()">REBUILD<span>XI</span></div>
+    <div class="bud"><small>TOTAL BUDGET</small><div class="budv">$0M</div></div>
+    <div class="club">Rebuilding <b class="clubn"></b></div>
+  </div>
+  <div class="mstage" id="mstage"></div>
+</section>
+
+<!-- LINEUP SCREEN -->
+<section id="game" class="screen">
+  <div class="topbar">
+    <div class="logo" onclick="goHome()">REBUILD<span>XI</span></div>
+    <div class="bud"><small>BUDGET</small><div class="budv">$0M</div></div>
+    <div class="club">Rebuilding <b class="clubn"></b></div>
+  </div>
+  <div class="gbody">
+    <div class="field"><div class="pitch" id="pitch">
+      <div class="ln half"></div><div class="ln circ"></div><div class="ln bb"></div><div class="ln bt"></div>
+    </div></div>
+    <aside class="panel" id="panel"></aside>
+  </div>
+</section>
+
+<!-- CARD TABLE -->
+<div class="table" id="table">
+  <div class="kicker cond" id="tableKick" style="font-weight:700"></div>
+  <h2 id="tableTitle">Pick a management card</h2>
+  <div class="deck" id="deck"></div>
+  <button class="gbtn p" id="tableBtn" onclick="closeTable()">Lock it in <span class="ar">▶</span></button>
+</div>
+
+<!-- END -->
+<div class="ov" id="endOv"><div class="end">
+  <div class="kicker cond" style="font-weight:700">FINAL TEAM RATING</div>
+  <div class="big" id="endOvr"></div>
+  <div class="grade" id="grade"></div>
+  <p class="cmp" id="cmp"></p>
+  <div style="display:flex;gap:12px">
+    <button class="gbtn k" onclick="$('endOv').classList.remove('on')">View XI</button>
+    <button class="gbtn s" onclick="openArchive()">Past challenges</button>
+  </div>
+</div></div>
+
+<script>
+const $=id=>document.getElementById(id);
+
+/* ---------- SEEDED RANDOM (same daily challenge for everyone) ---------- */
+function seeded(str){let h=1779033703^str.length;for(let i=0;i<str.length;i++){h=Math.imul(h^str.charCodeAt(i),3432918353);h=h<<13|h>>>19}
+ return()=>{h=Math.imul(h^h>>>16,2246822507);h=Math.imul(h^h>>>13,3266489909);return((h^=h>>>16)>>>0)/4294967296}}
+const pickR=(a,r)=>a[Math.floor(r()*a.length)];
+const shuffleR=(a,r)=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+
+/* ---------- DATA (ratings & values approximate; edit freely) ---------- */
+const SLOTS=[
+ {pos:"GK",name:"Goalkeeper",x:50,y:90},
+ {pos:"DEF",name:"Left Back",x:14,y:71},{pos:"DEF",name:"Centre Back",x:37,y:76},{pos:"DEF",name:"Centre Back",x:63,y:76},{pos:"DEF",name:"Right Back",x:86,y:71},
+ {pos:"MID",name:"Central Mid",x:24,y:50},{pos:"MID",name:"Defensive Mid",x:50,y:56},{pos:"MID",name:"Central Mid",x:76,y:50},
+ {pos:"FWD",name:"Left Wing",x:17,y:22},{pos:"FWD",name:"Striker",x:50,y:14},{pos:"FWD",name:"Right Wing",x:83,y:22},
+];
+// order the game walks through: LW, ST, RW, CM, CDM, CM, LB, CB, CB, RB, GK
+const ORDER=[8,9,10,5,6,7,1,2,3,4,0];
+const CARD_AT=[0,6]; // draw a management card before these steps
+
+const sq=a=>a.map(x=>({name:x[0],ovr:x[1],val:x[2],nation:x[3]||""}));
+const CHALLENGES={
+ "2026-11-15":{club:"Manchester United",league:"Premier League",
+   manager:{name:"Mauricio Pochettino",ovr:83,val:20},
+   mgrOptions:[["Michael Carrick",74,10,"Free agent"],["Keith Andrews",79,15,"Brentford"],["Cesc Fàbregas",84,40,"Como"]],
+   xi:sq([["Senne Lammens",80,25],["Luke Shaw",80,12],["Lisandro Martínez",83,35],["Matthijs de Ligt",82,30],["Diogo Dalot",80,25],
+          ["Kobbie Mainoo",81,45],["Casemiro",80,8],["Bruno Fernandes",86,45],["Matheus Cunha",83,60],["Benjamin Šeško",81,65],["Bryan Mbeumo",84,65]]),
+   bench:sq([["Altay Bayındır",74],["Tyrell Malacia",74],["Leny Yoro",79],["Harry Maguire",78],["Noussair Mazraoui",78],
+          ["Mason Mount",78],["Manuel Ugarte",78],["Toby Collyer",70],["Patrick Dorgu",76],["Joshua Zirkzee",77],["Amad Diallo",81]])},
+ "2026-11-14":{club:"Chelsea",league:"Premier League",
+   manager:{name:"Enzo Maresca",ovr:84,val:20},
+   mgrOptions:[["Kieran McKenna",77,10,"Ipswich"],["Andoni Iraola",81,15,"Bournemouth"],["Oliver Glasner",83,40,"Crystal Palace"]],
+   xi:sq([["Robert Sánchez",80,18],["Marc Cucurella",84,45],["Levi Colwill",83,55],["Wesley Fofana",81,30],["Reece James",84,45],
+          ["Enzo Fernández",85,80],["Moisés Caicedo",87,100],["Cole Palmer",87,110],["Jamie Gittens",80,50],["João Pedro",84,70],["Pedro Neto",83,55]]),
+   bench:sq([["Filip Jørgensen",75],["Jorrel Hato",78],["Tosin Adarabioyo",77],["Benoît Badiashile",77],["Malo Gusto",79],
+          ["Andrey Santos",77],["Roméo Lavia",78],["Dário Essugo",72],["Alejandro Garnacho",80],["Liam Delap",78],["Estêvão",80]])},
+ "2026-11-13":{club:"Tottenham",league:"Premier League",
+   manager:{name:"Thomas Frank",ovr:81,val:15},
+   mgrOptions:[["Scott Parker",72,10,"Burnley"],["Marco Silva",80,15,"Fulham"],["Andoni Iraola",81,40,"Bournemouth"]],
+   xi:sq([["Guglielmo Vicario",83,30],["Destiny Udogie",82,40],["Micky van de Ven",85,60],["Cristian Romero",85,50],["Pedro Porro",83,45],
+          ["Pape Matar Sarr",81,40],["João Palhinha",83,25],["Xavi Simons",84,70],["Mohammed Kudus",84,60],["Dominic Solanke",81,45],["Richarlison",79,20]]),
+   bench:sq([["Antonín Kinský",74],["Djed Spence",77],["Radu Drăgușin",77],["Kevin Danso",77],["Archie Gray",76],
+          ["Lucas Bergvall",79],["Rodrigo Bentancur",79],["James Maddison",82],["Mathys Tel",77],["Randal Kolo Muani",80],["Brennan Johnson",79]])},
+};
+const TODAY="2026-11-15";
+const START_BUDGET=75;
+
+const P=[
+ ["Thibaut Courtois","GK","Real Madrid","LaLiga","Belgium",89,25],["Alisson","GK","Liverpool","Premier League","Brazil",89,30],["Gianluigi Donnarumma","GK","Man City","Premier League","Italy",88,40],
+ ["Manuel Neuer","GK","Bayern","Bundesliga","Germany",86,5],["David Raya","GK","Arsenal","Premier League","Spain",87,35],["Yann Sommer","GK","Inter","Serie A","Switzerland",85,5],
+ ["Joan García","GK","Barcelona","LaLiga","Spain",83,25],["Mike Maignan","GK","AC Milan","Serie A","France",87,35],["Jordan Pickford","GK","Everton","Premier League","England",84,20],
+ ["Virgil van Dijk","DEF","Liverpool","Premier League","Netherlands",89,25],["William Saliba","DEF","Arsenal","Premier League","France",88,90],["Gabriel","DEF","Arsenal","Premier League","Brazil",87,75],
+ ["Rúben Dias","DEF","Man City","Premier League","Portugal",87,70],["Joško Gvardiol","DEF","Man City","Premier League","Croatia",86,75],["Antonio Rüdiger","DEF","Real Madrid","LaLiga","Germany",85,20],
+ ["Dean Huijsen","DEF","Real Madrid","LaLiga","Spain",83,60],["Trent Alexander-Arnold","DEF","Real Madrid","LaLiga","England",86,60],["Jules Koundé","DEF","Barcelona","LaLiga","France",86,60],
+ ["Pau Cubarsí","DEF","Barcelona","LaLiga","Spain",85,80],["Alejandro Balde","DEF","Barcelona","LaLiga","Spain",83,55],["Achraf Hakimi","DEF","PSG","Ligue 1","Morocco",88,70],
+ ["Marquinhos","DEF","PSG","Ligue 1","Brazil",86,30],["Nuno Mendes","DEF","PSG","Ligue 1","Portugal",88,80],["Alessandro Bastoni","DEF","Inter","Serie A","Italy",87,70],
+ ["Dayot Upamecano","DEF","Bayern","Bundesliga","France",84,45],["Alphonso Davies","DEF","Bayern","Bundesliga","Canada",84,45],["Ibrahima Konaté","DEF","Liverpool","Premier League","France",85,50],
+ ["Jurrien Timber","DEF","Arsenal","Premier League","Netherlands",84,60],["Marc Guéhi","DEF","Crystal Palace","Premier League","England",84,50],["Josko Stanišić","DEF","Bayern","Bundesliga","Croatia",82,35],
+ ["Rodri","MID","Man City","Premier League","Spain",89,80],["Jude Bellingham","MID","Real Madrid","LaLiga","England",89,160],["Federico Valverde","MID","Real Madrid","LaLiga","Uruguay",88,120],
+ ["Pedri","MID","Barcelona","LaLiga","Spain",89,140],["Frenkie de Jong","MID","Barcelona","LaLiga","Netherlands",86,55],["Declan Rice","MID","Arsenal","Premier League","England",88,120],
+ ["Martin Ødegaard","MID","Arsenal","Premier League","Norway",87,80],["Jamal Musiala","MID","Bayern","Bundesliga","Germany",88,130],["Joshua Kimmich","MID","Bayern","Bundesliga","Germany",87,40],
+ ["Florian Wirtz","MID","Liverpool","Premier League","Germany",87,120],["Alexis Mac Allister","MID","Liverpool","Premier League","Argentina",87,90],["Vitinha","MID","PSG","Ligue 1","Portugal",89,110],
+ ["João Neves","MID","PSG","Ligue 1","Portugal",87,110],["Nicolò Barella","MID","Inter","Serie A","Italy",87,80],["Hakan Çalhanoğlu","MID","Inter","Serie A","Turkey",85,25],
+ ["Cole Palmer","MID","Chelsea","Premier League","England",87,110],["Moisés Caicedo","MID","Chelsea","Premier League","Ecuador",87,100],["Bruno Guimarães","MID","Newcastle","Premier League","Brazil",86,75],
+ ["Kylian Mbappé","FWD","Real Madrid","LaLiga","France",91,180],["Vinícius Jr","FWD","Real Madrid","LaLiga","Brazil",90,170],["Lamine Yamal","FWD","Barcelona","LaLiga","Spain",91,200],
+ ["Raphinha","FWD","Barcelona","LaLiga","Brazil",89,80],["Robert Lewandowski","FWD","Barcelona","LaLiga","Poland",86,10],["Erling Haaland","FWD","Man City","Premier League","Norway",91,180],
+ ["Mohamed Salah","FWD","Liverpool","Premier League","Egypt",89,50],["Alexander Isak","FWD","Liverpool","Premier League","Sweden",88,120],["Harry Kane","FWD","Bayern","Bundesliga","England",90,80],
+ ["Michael Olise","FWD","Bayern","Bundesliga","France",88,120],["Ousmane Dembélé","FWD","PSG","Ligue 1","France",90,80],["Khvicha Kvaratskhelia","FWD","PSG","Ligue 1","Georgia",88,90],
+ ["Bukayo Saka","FWD","Arsenal","Premier League","England",88,140],["Lautaro Martínez","FWD","Inter","Serie A","Argentina",88,90],["Rafael Leão","FWD","AC Milan","Serie A","Portugal",85,70],
+ ["Nico Williams","FWD","Athletic Club","LaLiga","Spain",85,70],["Antoine Semenyo","FWD","Bournemouth","Premier League","Ghana",83,60],["Ollie Watkins","FWD","Aston Villa","Premier League","England",83,45],
+].map((a,i)=>({id:"p"+i,name:a[0],pos:a[1],club:a[2],league:a[3],nation:a[4],ovr:a[5],val:a[6]}));
+
+const MGMT=[
+ {t:"Premier League Only",d:"Every option you're offered comes from the Premier League."+" ",f:p=>p.league==="Premier League"},
+ {t:"LaLiga Scouting",d:"Your scouts only watched Spain. Options come from LaLiga.",f:p=>p.league==="LaLiga"},
+ {t:"Euro Tour",d:"Options come from the Bundesliga, Serie A or Ligue 1.",f:p=>["Bundesliga","Serie A","Ligue 1"].includes(p.league)},
+ {t:"Fire Sale",d:"Every player you sell goes for 25% more.",sale:1.25},
+ {t:"Sponsor Deal",d:"A new shirt sponsor adds $20M to your budget right now.",bonus:20},
+ {t:"Discount Window",d:"Every signing costs 25% less.",price:.75},
+ {t:"Homegrown Rule",d:"Options are English players only.",f:p=>p.nation==="England"},
+ {t:"No Superstars",d:"The dressing room needs humility. Options are rated 86 or below.",f:p=>p.ovr<=86},
+ {t:"Galáctico Era",d:"Only world class. Options are rated 87+, but prices go up 20%.",f:p=>p.ovr>=87,price:1.2},
+];
+
+/* ---------- STORAGE ---------- */
+const store={get(){try{return JSON.parse(localStorage.getItem("rxi")||"{}")}catch(e){return{}}},set(v){try{localStorage.setItem("rxi",JSON.stringify(v))}catch(e){}}};
+
+/* ---------- HOME / ARCHIVE ---------- */
+const fmtDate=d=>new Date(d+"T12:00").toLocaleDateString("en-US",{weekday:"long",month:"long",day:"numeric"});
+function show(id){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("on",s.id===id));$("endOv").classList.remove("on");$("table").classList.remove("on")}
+function goHome(){show("home")}
+$("todayClub").textContent=CHALLENGES[TODAY].club;
+$("todayDate").textContent=fmtDate(TODAY);
+
+function openArchive(){
+  show("archive");
+  const done=store.get(),t=new Date(TODAY+"T12:00"),y=t.getFullYear(),m=t.getMonth();
+  $("calTitle").textContent=t.toLocaleDateString("en-US",{month:"long",year:"numeric"});
+  const first=new Date(y,m,1).getDay(),days=new Date(y,m+1,0).getDate();
+  let h=["S","M","T","W","T","F","S"].map(d=>`<div class="h">${d}</div>`).join("")+"<div></div>".repeat(first);
+  const todayDone=!!done[TODAY];
+  for(let d=1;d<=days;d++){
+    const k=`${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`,c=CHALLENGES[k];
+    const locked=c&&k!==TODAY&&!todayDone;
+    h+=`<div class="day ${c?"has":""} ${k===TODAY?"today":""} ${done[k]?"done":""} ${locked?"lock":""}" ${c?`onclick="calClick('${k}',${locked})"`:""}>${d}</div>`;
+  }
+  $("calGrid").innerHTML=h;$("calInfo").textContent="";
+  $("calNote").textContent=todayDone?"Pick any past day to replay it.":"Finish today's challenge to unlock past days.";
+}
+function calClick(k,locked){
+  if(locked){$("calInfo").innerHTML=`<b>${CHALLENGES[k].club}</b> · locked until today's challenge is done`;return}
+  startChallenge(k);
+}
+
+/* ---------- STATE ---------- */
+let S;
+function setBudget(v){
+  S.budget=Math.round(v);
+  document.querySelectorAll(".budv").forEach(e=>{e.textContent=`$${S.budget}M`;e.classList.remove("flash");void e.offsetWidth;e.classList.add("flash")});
+}
+function startChallenge(key){
+  const c=CHALLENGES[key];
+  S={key,c,budget:START_BUDGET,mgr:{...c.manager,orig:true},mgrSold:false,team:Array(11).fill(null),step:0,card:null,cardIdx:0,stage:"needCard",log:[],usedCards:[]};
+  document.querySelectorAll(".clubn").forEach(e=>e.textContent=c.club);
+  setBudget(START_BUDGET);
+  show("mgrScr");renderMgr();
+}
+
+/* ---------- MANAGER SCREEN ---------- */
+function renderMgr(){
+  const c=S.c,m=c.manager;
+  let h=`<div class="mlabel">Step 1 · The Manager</div>
+   <div class="mcur"><div class="mcard ${S.mgrSold?"sold":""}"><div class="ovr">${m.ovr}</div><div class="role">CURRENT MANAGER</div>
+     <div class="nm">${m.name}</div><div class="worth">Sell value <b>$${m.val}M</b></div></div>`;
+  if(!S.mgrSold){
+    h+=`<div class="mact"><button class="gbtn k" onclick="keepMgr()">Keep him</button><button class="gbtn r" onclick="sellMgr()">Sell · +$${m.val}M</button></div></div>`;
+  }else{
+    h+=`</div><div class="mlabel" style="color:#fff">Pick his replacement</div><div class="mopts">`+
+      c.mgrOptions.map((o,i)=>{const ok=o[2]<=S.budget;return `<button class="mo ${ok?"":"no"}" ${ok?`onclick="hireMgr(${i})"`:""}>
+        <div class="tier">${["BUDGET","MID","TOP"][i]} OPTION</div><div class="ovr">${o[1]}</div><div class="nm">${o[0]}</div><div class="from">${o[3]}</div><div class="price">$${o[2]}M</div></button>`}).join("")+`</div>`;
+  }
+  $("mstage").innerHTML=h;
+}
+function keepMgr(){toLineup()}
+function sellMgr(){S.mgrSold=true;setBudget(S.budget+S.c.manager.val);renderMgr()}
+function hireMgr(i){const o=S.c.mgrOptions[i];S.mgr={name:o[0],ovr:o[1],val:o[2],orig:false};setBudget(S.budget-o[2]);setTimeout(toLineup,250)}
+function toLineup(){show("game");renderPitch();renderPanel()}
+
+/* ---------- LINEUP ---------- */
+function renderPitch(){
+  document.querySelectorAll(".slot").forEach(e=>e.remove());
+  SLOTS.forEach((s,i)=>{
+    const p=S.team[i];if(!p)return;
+    const d=document.createElement("div");
+    d.className="slot "+(p.kind==="new"?"new":p.kind==="bench"?"bench":"");
+    d.style.left=s.x+"%";d.style.top=s.y+"%";
+    d.innerHTML=`<div class="disc">${p.ovr}</div><div class="nm">${p.name}</div>`;
+    $("pitch").appendChild(d);
+  });
+}
+function renderPanel(){
+  const card=S.card;
+  let h=`<div class="prow">
+     <div class="mini"><small>MANAGER</small><b>${S.mgr.name}</b><span class="o">${S.mgr.ovr}</span></div>
+   </div>
+   <div class="cardslot ${card?"has":""}">${card?`<div class="t">MANAGEMENT CARD</div><h4>${card.t}</h4><p>${card.d}</p>`:`<div class="empty">NO CARD YET</div>`}</div>
+   <div class="prog">${ORDER.map((_,i)=>`<i class="${i<S.step?"d":i===S.step?"c":""}"></i>`).join("")}</div>
+   <div class="center" id="center"></div>`;
+  $("panel").innerHTML=h;
+  const c=$("center");
+  if(S.stage==="needCard"){
+    c.innerHTML=`<div class="poslbl">${S.cardIdx===0?"BEFORE WE START":"HALFWAY THERE"}</div><button class="gbtn p" onclick="dealCards()">Select management card <span class="ar">▶</span></button>`;
+  }else if(S.stage==="ready"){
+    c.innerHTML=`<div class="poslbl">CARD LOCKED IN</div><button class="gbtn p" onclick="nextPos()">${S.step===0?"Start":"Continue"} <span class="ar">▶</span></button>`;
+  }else if(S.stage==="pos"){
+    const si=ORDER[S.step],cur=S.c.xi[si],sv=saleVal(cur);
+    c.innerHTML=`<div class="poslbl">POSITION ${S.step+1} OF 11</div><div class="posname">${SLOTS[si].name}</div>
+      <div class="pcard"><div class="o">${cur.ovr}</div><div class="i"><b>${cur.name}</b><small>Current starter</small></div><div class="v">$${sv}M</div></div>
+      <div class="kbtns"><button class="gbtn k" onclick="keepPlayer()">Keep</button><button class="gbtn r" onclick="sellPlayer()">Sell +$${sv}M</button></div>`;
+  }else if(S.stage==="replace"){
+    const si=ORDER[S.step],opts=S.opts,bench=S.c.bench[si];
+    c.innerHTML=`<div class="poslbl">REPLACE YOUR</div><div class="posname" style="font-size:44px">${SLOTS[si].name}</div>
+      <div class="opts">${opts.map((p,i)=>{const pr=price(p),ok=pr<=S.budget;return `<button class="opt ${ok?"":"no"}" ${ok?`onclick="sign(${i})"`:""}>
+        <div class="o">${p.ovr}</div><div class="i"><small>${["BUDGET","MID","TOP"][i]} OPTION</small><b>${p.name}</b><span>${p.club}</span></div><div class="p">$${pr}M</div></button>`}).join("")}
+        <button class="opt bench" onclick="useBench()"><div class="o">${bench.ovr}</div><div class="i"><small>FROM THE BENCH</small><b>${bench.name}</b><span>${S.c.club}</span></div><div class="p">FREE</div></button>
+      </div>`;
+  }else if(S.stage==="done"){
+    c.innerHTML=`<div class="poslbl">XI COMPLETE</div><button class="gbtn p" onclick="finish()">See rating <span class="ar">▶</span></button>`;
+  }
+}
+
+/* ---------- CARDS ---------- */
+function dealCards(){
+  const r=seeded(S.key+"cards"+S.cardIdx);
+  const opts=shuffleR(MGMT.filter(c=>!S.usedCards.includes(c.t)),r).slice(0,4);
+  S.deal=opts;
+  $("tableKick").textContent=`MANAGEMENT CARD ${S.cardIdx+1} OF ${CARD_AT.length}`;
+  $("tableTitle").textContent="Pick a card";
+  $("deck").innerHTML=opts.map((c,i)=>`<div class="fc" id="fc${i}"><div class="fc-in" onclick="chooseCard(${i})">
+     <div class="face back"><div class="em">XI</div><div class="tag">MANAGEMENT</div></div>
+     <div class="face front"><div class="type">MANAGEMENT CARD</div><h3>${c.t}</h3><p>${c.d}</p></div></div></div>`).join("");
+  $("tableBtn").style.visibility="hidden";
+  $("table").classList.add("on");
+  // start every card stacked in the top-left corner, then deal them into place
+  opts.forEach((_,i)=>{
+    const el=$("fc"+i),b=el.getBoundingClientRect();
+    el.style.transition="none";
+    el.style.transform=`translate(${24-b.left}px,${24-b.top}px) rotate(${-6+i*2}deg)`;
+  });
+  requestAnimationFrame(()=>requestAnimationFrame(()=>opts.forEach((_,i)=>{
+    const el=$("fc"+i);
+    el.style.transition=`transform .75s cubic-bezier(.2,.9,.25,1.05) ${.35+i*.14}s`;
+    el.style.transform="none";
+    setTimeout(()=>el.classList.add("ready"),1100+i*140);
+  })));
+}
+let choosing=false;
+function chooseCard(i){
+  if(S.stage!=="needCard"||!$("fc"+i).classList.contains("ready"))return;
+  const c=S.deal[i];S.card=c;S.usedCards.push(c.t);S.stage="ready";S.cardIdx++;
+  $("fc"+i).classList.add("flipped","chosen");
+  $("tableTitle").textContent=c.t;
+  setTimeout(()=>S.deal.forEach((_,j)=>{if(j!==i)$("fc"+j).classList.add("flipped","dim")}),700);
+  setTimeout(()=>$("tableBtn").style.visibility="visible",1100);
+  if(c.bonus)setTimeout(()=>setBudget(S.budget+c.bonus),900);
+}
+function closeTable(){$("table").classList.remove("on");renderPanel()}
+
+/* ---------- POSITIONS ---------- */
+const saleVal=p=>Math.round(p.val*(S.card&&S.card.sale||1));
+const price=p=>Math.round(p.val*(S.card&&S.card.price||1));
+function nextPos(){S.stage="pos";renderPanel()}
+function keepPlayer(){
+  const si=ORDER[S.step];S.team[si]={...S.c.xi[si],kind:"orig"};advance();
+}
+function sellPlayer(){
+  const si=ORDER[S.step],cur=S.c.xi[si];
+  setBudget(S.budget+saleVal(cur));
+  S.opts=makeOptions(si);S.stage="replace";renderPanel();
+}
+function makeOptions(si){
+  const r=seeded(S.key+"pos"+si+(S.card?S.card.t:""));
+  const taken=new Set(S.team.filter(Boolean).map(p=>p.name));
+  let pool=P.filter(p=>p.pos===SLOTS[si].pos&&p.club!==S.c.club&&!taken.has(p.name));
+  const ruled=S.card&&S.card.f?pool.filter(S.card.f):pool;
+  const src=ruled.length>=3?ruled:pool;
+  const sorted=[...src].sort((a,b)=>a.val-b.val),n=sorted.length,third=Math.max(1,Math.floor(n/3));
+  const tiers=[sorted.slice(0,third),sorted.slice(third,n-third),sorted.slice(n-third)].map(t=>t.length?t:sorted);
+  const out=[];tiers.forEach(t=>{const c=t.filter(p=>!out.includes(p));out.push(pickR(c.length?c:t,r))});
+  return out;
+}
+function sign(i){const p=S.opts[i],si=ORDER[S.step];setBudget(S.budget-price(p));S.team[si]={...p,kind:"new"};advance()}
+function useBench(){const si=ORDER[S.step];S.team[si]={...S.c.bench[si],kind:"bench"};advance()}
+function advance(){
+  renderPitch();S.step++;
+  if(S.step>=ORDER.length){S.stage="done";return renderPanel()}
+  if(CARD_AT.includes(S.step)){S.card=null;S.stage="needCard"}else S.stage="pos";
+  renderPanel();
+}
+
+/* ---------- END ---------- */
+function finish(){
+  const avg=S.team.reduce((a,p)=>a+p.ovr,0)/11;
+  const o=Math.round(avg*.9+S.mgr.ovr*.1);
+  const orig=Math.round(S.c.xi.reduce((a,p)=>a+p.ovr,0)/11*.9+S.c.manager.ovr*.1);
+  const d=store.get();d[S.key]=Math.max(d[S.key]||0,o);store.set(d);
+  $("endOvr").textContent=o;
+  $("grade").textContent=o>=89?"Ballon d'Or squad":o>=87?"Champions League winners":o>=85?"Title contenders":o>=83?"Top four":"Rebuild the rebuild";
+  $("cmp").innerHTML=`Original ${S.c.club} <b>${orig}</b> · Yours <b>${o}</b> (${o-orig>=0?"+":""}${o-orig}) · <b>$${S.budget}M</b> left`;
+  $("endOv").classList.add("on");
+}
+</script>
+</body>
+</html>
