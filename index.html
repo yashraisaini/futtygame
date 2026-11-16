@@ -156,6 +156,13 @@ button{font-family:inherit;cursor:pointer}
 .opt .p{font-family:Anton,sans-serif;font-size:20px;color:var(--money)}
 .opt.bench{border-style:dashed}
 .opt.bench .p{color:#fff}
+.opt{flex-direction:column;align-items:stretch;gap:0}
+.optrow{display:flex;align-items:center;gap:14px}
+.statsToggle{align-self:flex-start;margin-top:10px;background:none;border:0;color:var(--mgmt);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:0}
+.stats{display:none;margin-top:8px;padding-top:8px;border-top:1px solid #222;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.stats.open{display:block}
+.goalp{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--mgmt);margin-top:6px;text-transform:uppercase}
+.goalp.done{color:var(--money)}
 .prog{display:flex;gap:4px}
 .prog i{flex:1;height:3px;background:#222}.prog i.d{background:#fff}.prog i.c{background:var(--accent)}
 
@@ -310,40 +317,143 @@ const TODAY="2026-11-15";
 const START_BUDGET=75;
 
 const P=[
- ["Thibaut Courtois","GK","Real Madrid","LaLiga","Belgium",89,25],["Alisson","GK","Liverpool","Premier League","Brazil",89,30],["Gianluigi Donnarumma","GK","Man City","Premier League","Italy",88,40],
- ["Manuel Neuer","GK","Bayern","Bundesliga","Germany",86,5],["David Raya","GK","Arsenal","Premier League","Spain",87,35],["Yann Sommer","GK","Inter","Serie A","Switzerland",85,5],
- ["Joan García","GK","Barcelona","LaLiga","Spain",83,25],["Mike Maignan","GK","AC Milan","Serie A","France",87,35],["Jordan Pickford","GK","Everton","Premier League","England",84,20],
- ["Virgil van Dijk","DEF","Liverpool","Premier League","Netherlands",89,25],["William Saliba","DEF","Arsenal","Premier League","France",88,90],["Gabriel","DEF","Arsenal","Premier League","Brazil",87,75],
- ["Rúben Dias","DEF","Man City","Premier League","Portugal",87,70],["Joško Gvardiol","DEF","Man City","Premier League","Croatia",86,75],["Antonio Rüdiger","DEF","Real Madrid","LaLiga","Germany",85,20],
- ["Dean Huijsen","DEF","Real Madrid","LaLiga","Spain",83,60],["Trent Alexander-Arnold","DEF","Real Madrid","LaLiga","England",86,60],["Jules Koundé","DEF","Barcelona","LaLiga","France",86,60],
- ["Pau Cubarsí","DEF","Barcelona","LaLiga","Spain",85,80],["Alejandro Balde","DEF","Barcelona","LaLiga","Spain",83,55],["Achraf Hakimi","DEF","PSG","Ligue 1","Morocco",88,70],
- ["Marquinhos","DEF","PSG","Ligue 1","Brazil",86,30],["Nuno Mendes","DEF","PSG","Ligue 1","Portugal",88,80],["Alessandro Bastoni","DEF","Inter","Serie A","Italy",87,70],
- ["Dayot Upamecano","DEF","Bayern","Bundesliga","France",84,45],["Alphonso Davies","DEF","Bayern","Bundesliga","Canada",84,45],["Ibrahima Konaté","DEF","Liverpool","Premier League","France",85,50],
- ["Jurrien Timber","DEF","Arsenal","Premier League","Netherlands",84,60],["Marc Guéhi","DEF","Crystal Palace","Premier League","England",84,50],["Josko Stanišić","DEF","Bayern","Bundesliga","Croatia",82,35],
- ["Rodri","MID","Man City","Premier League","Spain",89,80],["Jude Bellingham","MID","Real Madrid","LaLiga","England",89,160],["Federico Valverde","MID","Real Madrid","LaLiga","Uruguay",88,120],
- ["Pedri","MID","Barcelona","LaLiga","Spain",89,140],["Frenkie de Jong","MID","Barcelona","LaLiga","Netherlands",86,55],["Declan Rice","MID","Arsenal","Premier League","England",88,120],
- ["Martin Ødegaard","MID","Arsenal","Premier League","Norway",87,80],["Jamal Musiala","MID","Bayern","Bundesliga","Germany",88,130],["Joshua Kimmich","MID","Bayern","Bundesliga","Germany",87,40],
- ["Florian Wirtz","MID","Liverpool","Premier League","Germany",87,120],["Alexis Mac Allister","MID","Liverpool","Premier League","Argentina",87,90],["Vitinha","MID","PSG","Ligue 1","Portugal",89,110],
- ["João Neves","MID","PSG","Ligue 1","Portugal",87,110],["Nicolò Barella","MID","Inter","Serie A","Italy",87,80],["Hakan Çalhanoğlu","MID","Inter","Serie A","Turkey",85,25],
- ["Cole Palmer","MID","Chelsea","Premier League","England",87,110],["Moisés Caicedo","MID","Chelsea","Premier League","Ecuador",87,100],["Bruno Guimarães","MID","Newcastle","Premier League","Brazil",86,75],
- ["Kylian Mbappé","FWD","Real Madrid","LaLiga","France",91,180],["Vinícius Jr","FWD","Real Madrid","LaLiga","Brazil",90,170],["Lamine Yamal","FWD","Barcelona","LaLiga","Spain",91,200],
- ["Raphinha","FWD","Barcelona","LaLiga","Brazil",89,80],["Robert Lewandowski","FWD","Barcelona","LaLiga","Poland",86,10],["Erling Haaland","FWD","Man City","Premier League","Norway",91,180],
- ["Mohamed Salah","FWD","Liverpool","Premier League","Egypt",89,50],["Alexander Isak","FWD","Liverpool","Premier League","Sweden",88,120],["Harry Kane","FWD","Bayern","Bundesliga","England",90,80],
- ["Michael Olise","FWD","Bayern","Bundesliga","France",88,120],["Ousmane Dembélé","FWD","PSG","Ligue 1","France",90,80],["Khvicha Kvaratskhelia","FWD","PSG","Ligue 1","Georgia",88,90],
- ["Bukayo Saka","FWD","Arsenal","Premier League","England",88,140],["Lautaro Martínez","FWD","Inter","Serie A","Argentina",88,90],["Rafael Leão","FWD","AC Milan","Serie A","Portugal",85,70],
- ["Nico Williams","FWD","Athletic Club","LaLiga","Spain",85,70],["Antoine Semenyo","FWD","Bournemouth","Premier League","Ghana",83,60],["Ollie Watkins","FWD","Aston Villa","Premier League","England",83,45],
-].map((a,i)=>({id:"p"+i,name:a[0],pos:a[1],club:a[2],league:a[3],nation:a[4],ovr:a[5],val:a[6]}));
+ // GK
+ ["Alisson","GK","Liverpool","Premier League","Brazil",88,28,33,34,0,0,true],
+ ["David Raya","GK","Arsenal","Premier League","Spain",86,32,30,36,0,0,true],
+ ["Gianluigi Donnarumma","GK","Man City","Premier League","Italy",88,42,27,34,0,0,true],
+ ["Gregor Kobel","GK","Dortmund","Bundesliga","Switzerland",85,38,28,32,0,0,true],
+ ["Mike Maignan","GK","AC Milan","Serie A","France",85,30,29,30,0,0,false],
+ ["Yann Sommer","GK","Inter","Serie A","Switzerland",83,6,37,26,0,0,true],
+ ["Marc-André ter Stegen","GK","Barcelona","LaLiga","Germany",82,14,34,10,0,0,true],
+ ["Emiliano Martínez","GK","Aston Villa","Premier League","Argentina",85,28,33,35,0,1,false],
+ ["Mark Flekken","GK","Bayer Leverkusen","Bundesliga","Netherlands",80,18,32,30,0,0,true],
+ ["Matz Sels","GK","Nottingham Forest","Premier League","Belgium",81,20,33,36,0,0,false],
+ ["Łukasz Fabiański","GK","West Ham","Premier League","Poland",73,3,40,14,0,0,false],
+ ["Diogo Costa","GK","Porto","Primeira Liga","Portugal",85,42,27,34,0,0,true],
+ ["Jordan Pickford","GK","Everton","Premier League","England",83,22,32,38,0,0,false],
+ ["Bart Verbruggen","GK","Brighton","Premier League","Netherlands",79,18,23,32,0,0,false],
+ ["James Trafford","GK","Burnley","Premier League","England",76,9,23,30,0,0,false],
+ // DEF
+ ["Virgil van Dijk","DEF","Liverpool","Premier League","Netherlands",87,18,35,30,2,1,true],
+ ["William Saliba","DEF","Arsenal","Premier League","France",88,85,25,34,2,1,true],
+ ["Gabriel","DEF","Arsenal","Premier League","Brazil",86,70,28,33,4,1,true],
+ ["Rúben Dias","DEF","Man City","Premier League","Portugal",87,65,29,32,1,0,true],
+ ["Joško Gvardiol","DEF","Man City","Premier League","Croatia",86,70,24,34,3,2,true],
+ ["Marc Guéhi","DEF","Crystal Palace","Premier League","England",83,45,26,35,2,0,false],
+ ["Levi Colwill","DEF","Chelsea","Premier League","England",82,40,23,28,0,0,true],
+ ["Jarrad Branthwaite","DEF","Everton","Premier League","England",81,38,24,30,0,0,false],
+ ["Dan Burn","DEF","Newcastle","Premier League","England",77,10,34,32,1,0,true],
+ ["Fabian Schär","DEF","Newcastle","Premier League","Switzerland",79,8,34,29,2,1,true],
+ ["Lewis Dunk","DEF","Brighton","Premier League","England",77,6,34,30,1,0,false],
+ ["Pedro Porro","DEF","Tottenham","Premier League","Spain",83,48,27,34,2,5,true],
+ ["Destiny Udogie","DEF","Tottenham","Premier League","Italy",82,42,23,30,1,3,true],
+ ["Alessandro Bastoni","DEF","Inter","Serie A","Italy",87,68,27,33,2,2,true],
+ ["Federico Dimarco","DEF","Inter","Serie A","Italy",84,40,28,32,3,6,true],
+ ["Giovanni Di Lorenzo","DEF","Napoli","Serie A","Italy",82,22,32,34,1,2,true],
+ ["Théo Hernández","DEF","AC Milan","Serie A","France",85,55,28,32,3,5,false],
+ ["Juan Miranda","DEF","Real Betis","LaLiga","Spain",75,10,26,30,0,1,false],
+ ["Dayot Upamecano","DEF","Bayern","Bundesliga","France",85,40,27,30,1,0,true],
+ ["Alphonso Davies","DEF","Bayern","Bundesliga","Canada",85,45,26,28,1,4,true],
+ ["Nico Schlotterbeck","DEF","Dortmund","Bundesliga","Germany",83,45,26,31,2,1,true],
+ ["Jonathan Tah","DEF","Bayer Leverkusen","Bundesliga","Germany",83,30,30,32,3,0,true],
+ ["Piero Hincapié","DEF","Bayer Leverkusen","Bundesliga","Ecuador",81,32,24,29,1,0,true],
+ ["Jurrien Timber","DEF","Arsenal","Premier League","Netherlands",84,55,24,30,1,2,true],
+ ["Kim Min-jae","DEF","Bayern","Bundesliga","South Korea",83,35,29,26,1,0,true],
+ ["Trent Alexander-Arnold","DEF","Real Madrid","LaLiga","England",86,55,27,28,1,6,true],
+ ["Jules Koundé","DEF","Barcelona","LaLiga","France",86,55,27,32,1,2,true],
+ ["Dean Huijsen","DEF","Real Madrid","LaLiga","Spain",83,55,21,28,1,0,true],
+ ["Robin Le Normand","DEF","Atlético Madrid","LaLiga","Spain",82,35,29,30,2,0,true],
+ ["Aymeric Laporte","DEF","Al-Nassr","Saudi Pro League","France",80,12,32,27,2,0,false],
+ ["Wesley Fofana","DEF","Chelsea","Premier League","France",82,35,25,22,0,0,true],
+ ["Micky van de Ven","DEF","Tottenham","Premier League","Netherlands",85,55,24,33,1,0,true],
+ ["Álex Grimaldo","DEF","Bayer Leverkusen","Bundesliga","Spain",82,22,30,32,2,10,true],
+ ["Maxence Lacroix","DEF","Crystal Palace","Premier League","France",79,24,26,31,1,0,false],
+ // MID
+ ["Declan Rice","MID","Arsenal","Premier League","England",88,90,27,35,5,6,true],
+ ["Martin Ødegaard","MID","Arsenal","Premier League","Norway",87,65,27,32,6,8,true],
+ ["Moisés Caicedo","MID","Chelsea","Premier League","Ecuador",87,85,24,36,2,2,true],
+ ["Enzo Fernández","MID","Chelsea","Premier League","Argentina",86,70,25,34,5,7,true],
+ ["Alexis Mac Allister","MID","Liverpool","Premier League","Argentina",86,60,27,33,6,5,true],
+ ["Ryan Gravenberch","MID","Liverpool","Premier League","Netherlands",84,45,24,35,3,2,true],
+ ["James Maddison","MID","Tottenham","Premier League","England",83,38,29,24,4,6,false],
+ ["Pape Matar Sarr","MID","Tottenham","Premier League","Senegal",81,32,23,33,3,4,true],
+ ["Bruno Guimarães","MID","Newcastle","Premier League","Brazil",86,70,28,33,4,3,true],
+ ["Morgan Gibbs-White","MID","Nottingham Forest","Premier League","England",81,35,25,34,6,9,false],
+ ["Elliot Anderson","MID","Nottingham Forest","Premier League","England",78,16,23,33,3,2,false],
+ ["Jacob Ramsey","MID","Aston Villa","Premier League","England",78,20,24,25,4,2,false],
+ ["Amadou Onana","MID","Aston Villa","Premier League","Belgium",80,30,23,28,2,1,true],
+ ["Youri Tielemans","MID","Aston Villa","Premier League","Belgium",80,18,28,30,3,4,false],
+ ["Tyler Adams","MID","Bournemouth","Premier League","United States",76,10,27,26,0,1,false],
+ ["Alex Scott","MID","Bournemouth","Premier League","England",74,8,22,24,1,2,false],
+ ["Nicolò Barella","MID","Inter","Serie A","Italy",87,55,28,34,4,8,true],
+ ["Hakan Çalhanoğlu","MID","Inter","Serie A","Turkey",85,25,31,32,6,5,true],
+ ["Sandro Tonali","MID","Newcastle","Premier League","Italy",83,45,25,28,3,2,true],
+ ["Teun Koopmeiners","MID","Juventus","Serie A","Netherlands",82,35,27,27,4,1,true],
+ ["Scott McTominay","MID","Napoli","Serie A","Scotland",82,30,28,33,12,2,true],
+ ["Lewis Ferguson","MID","Bologna","Serie A","Scotland",78,18,25,27,5,3,false],
+ ["Joshua Kimmich","MID","Bayern","Bundesliga","Germany",87,35,30,30,2,10,true],
+ ["Xavi Simons","MID","Tottenham","Premier League","Netherlands",85,55,22,30,5,7,true],
+ ["Florian Wirtz","MID","Liverpool","Premier League","Germany",88,100,22,30,8,12,true],
+ ["Granit Xhaka","MID","Bayer Leverkusen","Bundesliga","Switzerland",82,15,33,32,3,8,true],
+ ["Exequiel Palacios","MID","Bayer Leverkusen","Bundesliga","Argentina",80,20,27,28,2,3,true],
+ ["İlkay Gündoğan","MID","Galatasaray","Süper Lig","Germany",80,8,35,26,3,5,false],
+ ["Frenkie de Jong","MID","Barcelona","LaLiga","Netherlands",85,40,28,24,2,3,true],
+ ["Fabián Ruiz","MID","PSG","Ligue 1","Spain",83,30,30,30,6,4,true],
+ ["Warren Zaïre-Emery","MID","PSG","Ligue 1","France",84,55,20,32,3,4,true],
+ ["João Neves","MID","PSG","Ligue 1","Portugal",87,85,21,34,4,5,true],
+ ["Martín Zubimendi","MID","Arsenal","Premier League","Spain",84,50,27,32,2,3,true],
+ ["Conor Gallagher","MID","Atlético Madrid","LaLiga","England",79,28,26,30,3,3,true],
+ ["Adam Wharton","MID","Crystal Palace","Premier League","England",80,30,21,30,1,4,false],
+ ["Romeo Lavia","MID","Chelsea","Premier League","Belgium",79,25,21,18,0,1,true],
+ // FWD
+ ["Erling Haaland","FWD","Man City","Premier League","Norway",91,170,25,32,34,5,true],
+ ["Mohamed Salah","FWD","Liverpool","Premier League","Egypt",89,45,33,34,22,15,true],
+ ["Viktor Gyökeres","FWD","Arsenal","Premier League","Sweden",86,75,27,33,28,8,true],
+ ["Alexander Isak","FWD","Liverpool","Premier League","Sweden",88,100,26,28,21,4,true],
+ ["Ollie Watkins","FWD","Aston Villa","Premier League","England",83,45,29,34,17,9,true],
+ ["Dominic Solanke","FWD","Tottenham","Premier League","England",81,35,28,30,12,3,false],
+ ["Chris Wood","FWD","Nottingham Forest","Premier League","New Zealand",78,14,34,33,20,3,false],
+ ["Jean-Philippe Mateta","FWD","Crystal Palace","Premier League","France",79,22,28,32,15,2,false],
+ ["Evanilson","FWD","Bournemouth","Premier League","Brazil",79,25,26,33,10,4,false],
+ ["Yoane Wissa","FWD","Newcastle","Premier League","DR Congo",80,30,29,31,13,5,true],
+ ["Bukayo Saka","FWD","Arsenal","Premier League","England",88,120,24,30,12,10,true],
+ ["Morgan Rogers","FWD","Aston Villa","Premier League","England",82,40,23,33,10,8,false],
+ ["Jarrod Bowen","FWD","West Ham","Premier League","England",82,35,29,34,13,4,false],
+ ["Anthony Gordon","FWD","Newcastle","Premier League","England",82,45,25,33,9,10,true],
+ ["Eberechi Eze","FWD","Arsenal","Premier League","England",84,65,27,32,11,7,true],
+ ["Noni Madueke","FWD","Arsenal","Premier League","England",81,40,24,28,8,5,true],
+ ["Cody Gakpo","FWD","Liverpool","Premier League","Netherlands",83,55,27,33,14,7,true],
+ ["Rafael Leão","FWD","AC Milan","Serie A","Portugal",85,60,27,32,12,10,false],
+ ["Lautaro Martínez","FWD","Inter","Serie A","Argentina",88,80,28,34,22,6,true],
+ ["Moise Kean","FWD","Fiorentina","Serie A","Italy",80,25,26,32,17,3,false],
+ ["Dušan Vlahović","FWD","Juventus","Serie A","Serbia",82,35,26,30,16,2,true],
+ ["Ademola Lookman","FWD","Atalanta","Serie A","Nigeria",84,50,28,34,15,6,false],
+ ["Harry Kane","FWD","Bayern","Bundesliga","England",90,65,33,32,26,8,true],
+ ["Michael Olise","FWD","Bayern","Bundesliga","France",87,90,24,31,14,13,true],
+ ["Serhou Guirassy","FWD","Dortmund","Bundesliga","Guinea",83,45,30,32,21,4,true],
+ ["Patrik Schick","FWD","Bayer Leverkusen","Bundesliga","Czechia",82,30,30,28,22,3,true],
+ ["Omar Marmoush","FWD","Man City","Premier League","Egypt",84,55,27,30,15,7,true],
+ ["Désiré Doué","FWD","PSG","Ligue 1","France",83,70,20,28,8,9,true],
+ ["Estêvão","FWD","Chelsea","Premier League","Brazil",81,55,19,22,5,6,true],
+ ["Kylian Mbappé","FWD","Real Madrid","LaLiga","France",91,170,27,33,30,8,true],
+ ["Vinícius Jr","FWD","Real Madrid","LaLiga","Brazil",90,160,26,30,18,15,true],
+ ["Nico Williams","FWD","Athletic Club","LaLiga","Spain",85,55,24,32,8,9,true],
+ ["Antoine Griezmann","FWD","Atlético Madrid","LaLiga","France",85,20,35,30,15,10,true],
+ ["Robert Lewandowski","FWD","Barcelona","LaLiga","Poland",86,10,37,28,19,4,true],
+ ["Ousmane Dembélé","FWD","PSG","Ligue 1","France",89,70,29,30,21,13,true],
+ ["Alexandre Lacazette","FWD","Lyon","Ligue 1","France",80,8,35,30,14,4,false],
+ ["Jonathan David","FWD","Juventus","Serie A","Canada",83,35,26,30,16,5,true],
+].map((a,i)=>({id:"p"+i,name:a[0],pos:a[1],club:a[2],league:a[3],nation:a[4],ovr:a[5],val:a[6],age:a[7],apps:a[8],goals:a[9],assists:a[10],ucl:a[11]}));
 
 const MGMT=[
- {t:"Premier League Only",d:"Every option you're offered comes from the Premier League."+" ",f:p=>p.league==="Premier League"},
- {t:"LaLiga Scouting",d:"Your scouts only watched Spain. Options come from LaLiga.",f:p=>p.league==="LaLiga"},
- {t:"Euro Tour",d:"Options come from the Bundesliga, Serie A or Ligue 1.",f:p=>["Bundesliga","Serie A","Ligue 1"].includes(p.league)},
+ {t:"Boardroom Mandate",d:"The board wants more homegrown identity in the dressing room. Sign at least 3 English players.",goal:{type:"nation",val:"England",need:3}},
+ {t:"Big-Game Experience",d:"Management believes this group lacks know-how on the biggest nights. Sign at least 2 players with Champions League pedigree.",goal:{type:"ucl",need:2}},
+ {t:"Leadership Needed",d:"The board wants proven heads in the dressing room. Sign at least 2 players aged 32 or older.",goal:{type:"ageMin",val:32,need:2}},
+ {t:"Build For The Future",d:"Ownership wants young legs for the long term. Sign at least 2 players aged 23 or under.",goal:{type:"ageMax",val:23,need:2}},
+ {t:"Widen The Net",d:"Recruitment is tired of recycling the same two leagues. Sign players from at least 3 different leagues.",goal:{type:"leagueSpread",need:3}},
  {t:"Fire Sale",d:"Every player you sell goes for 25% more.",sale:1.25},
  {t:"Sponsor Deal",d:"A new shirt sponsor adds $20M to your budget right now.",bonus:20},
  {t:"Discount Window",d:"Every signing costs 25% less.",price:.75},
- {t:"Homegrown Rule",d:"Options are English players only.",f:p=>p.nation==="England"},
- {t:"No Superstars",d:"The dressing room needs humility. Options are rated 86 or below.",f:p=>p.ovr<=86},
- {t:"Galáctico Era",d:"Only world class. Options are rated 87+, but prices go up 20%.",f:p=>p.ovr>=87,price:1.2},
 ];
 
 /* ---------- STORAGE ---------- */
@@ -427,7 +537,7 @@ function renderPanel(){
   let h=`<div class="prow">
      <div class="mini"><small>MANAGER</small><b>${S.mgr.name}</b><span class="o">${S.mgr.ovr}</span></div>
    </div>
-   <div class="cardslot ${card?"has":""}">${card?`<div class="t">MANAGEMENT CARD</div><h4>${card.t}</h4><p>${card.d}</p>`:`<div class="empty">NO CARD YET</div>`}</div>
+   <div class="cardslot ${card?"has":""}">${card?`<div class="t">MANAGEMENT CARD</div><h4>${card.t}</h4><p>${card.d}</p>${card.goal?`<div class="goalp ${S.goalDone?"done":""}">${S.goalDone?"✓ Mandate complete (+$15M)":goalLabel(card.goal)}</div>`:""}`:`<div class="empty">NO CARD YET</div>`}</div>
    <div class="prog">${ORDER.map((_,i)=>`<i class="${i<S.step?"d":i===S.step?"c":""}"></i>`).join("")}</div>
    <div class="center" id="center"></div>`;
   $("panel").innerHTML=h;
@@ -444,9 +554,12 @@ function renderPanel(){
   }else if(S.stage==="replace"){
     const si=ORDER[S.step],opts=S.opts,bench=S.c.bench[si];
     c.innerHTML=`<div class="poslbl">REPLACE YOUR</div><div class="posname" style="font-size:44px">${SLOTS[si].name}</div>
-      <div class="opts">${opts.map((p,i)=>{const pr=price(p),ok=pr<=S.budget;return `<button class="opt ${ok?"":"no"}" ${ok?`onclick="sign(${i})"`:""}>
-        <div class="o">${p.ovr}</div><div class="i"><small>${["BUDGET","MID","TOP"][i]} OPTION</small><b>${p.name}</b><span>${p.club}</span></div><div class="p">$${pr}M</div></button>`}).join("")}
-        <button class="opt bench" onclick="useBench()"><div class="o">${bench.ovr}</div><div class="i"><small>FROM THE BENCH</small><b>${bench.name}</b><span>${S.c.club}</span></div><div class="p">FREE</div></button>
+      <div class="opts">${opts.map((p,i)=>{const pr=price(p),ok=pr<=S.budget;return `<div class="opt ${ok?"":"no"}" ${ok?`onclick="sign(${i})"`:""}>
+        <div class="optrow"><div class="o">${p.ovr}</div><div class="i"><small>${["BUDGET","MID","TOP"][i]} OPTION</small><b>${p.name}</b><span>${p.club} · ${p.league}</span></div><div class="p">$${pr}M</div></div>
+        <button class="statsToggle" onclick="event.stopPropagation();toggleStats(${i})">Stats ▾</button>
+        <div class="stats" id="stats${i}">Age ${p.age} · ${p.apps} apps · ${p.goals}G ${p.assists}A last season · ${p.ucl?"Champions League experience":"No Champions League experience"}</div>
+      </div>`}).join("")}
+        <button class="opt bench" onclick="useBench()"><div class="optrow"><div class="o">${bench.ovr}</div><div class="i"><small>FROM THE BENCH</small><b>${bench.name}</b><span>${S.c.club}</span></div><div class="p">FREE</div></div></button>
       </div>`;
   }else if(S.stage==="done"){
     c.innerHTML=`<div class="poslbl">XI COMPLETE</div><button class="gbtn p" onclick="finish()">See rating <span class="ar">▶</span></button>`;
@@ -484,6 +597,7 @@ function chooseCard(i){
   if(S.stage!=="needCard")return;
   S.deal.forEach((_,j)=>{const e=$("fc"+j);e.style.transition="none";e.style.transform="none"}); // snap into place if still dealing
   const c=S.deal[i];S.card=c;S.usedCards.push(c.t);S.stage="ready";S.cardIdx++;
+  S.goalCount=0;S.goalLeagues=new Set();S.goalDone=false;
   $("fc"+i).classList.add("flipped","chosen");
   $("tableTitle").textContent=c.t;
   setTimeout(()=>S.deal.forEach((_,j)=>{if(j!==i)$("fc"+j).classList.add("flipped","dim")}),700);
@@ -507,15 +621,32 @@ function sellPlayer(){
 function makeOptions(si){
   const r=seeded(S.key+"pos"+si+(S.card?S.card.t:""));
   const taken=new Set(S.team.filter(Boolean).map(p=>p.name));
-  let pool=P.filter(p=>p.pos===SLOTS[si].pos&&p.club!==S.c.club&&!taken.has(p.name));
-  const ruled=S.card&&S.card.f?pool.filter(S.card.f):pool;
-  const src=ruled.length>=3?ruled:pool;
-  const sorted=[...src].sort((a,b)=>a.val-b.val),n=sorted.length,third=Math.max(1,Math.floor(n/3));
+  const pool=P.filter(p=>p.pos===SLOTS[si].pos&&p.club!==S.c.club&&!taken.has(p.name));
+  const sorted=[...pool].sort((a,b)=>a.val-b.val),n=sorted.length,third=Math.max(1,Math.floor(n/3));
   const tiers=[sorted.slice(0,third),sorted.slice(third,n-third),sorted.slice(n-third)].map(t=>t.length?t:sorted);
   const out=[];tiers.forEach(t=>{const c=t.filter(p=>!out.includes(p));out.push(pickR(c.length?c:t,r))});
   return out;
 }
-function sign(i){const p=S.opts[i],si=ORDER[S.step];setBudget(S.budget-price(p));S.team[si]={...p,kind:"new"};advance()}
+function toggleStats(i){$("stats"+i).classList.toggle("open")}
+function goalLabel(g){
+  if(g.type==="nation")return `${S.goalCount}/${g.need} ${g.val} signings`;
+  if(g.type==="ucl")return `${S.goalCount}/${g.need} Champions League signings`;
+  if(g.type==="ageMin")return `${S.goalCount}/${g.need} signings aged ${g.val}+`;
+  if(g.type==="ageMax")return `${S.goalCount}/${g.need} signings aged ${g.val} or under`;
+  if(g.type==="leagueSpread")return `${S.goalCount}/${g.need} different leagues signed from`;
+  return "";
+}
+function checkGoal(p){
+  const card=S.card;if(!card||!card.goal||S.goalDone)return;
+  const g=card.goal;
+  if(g.type==="leagueSpread"){S.goalLeagues.add(p.league);S.goalCount=S.goalLeagues.size}
+  else{
+    const hit=g.type==="nation"?p.nation===g.val:g.type==="ucl"?p.ucl:g.type==="ageMin"?p.age>=g.val:g.type==="ageMax"?p.age<=g.val:false;
+    if(hit)S.goalCount++;
+  }
+  if(S.goalCount>=g.need){S.goalDone=true;setBudget(S.budget+15)}
+}
+function sign(i){const p=S.opts[i],si=ORDER[S.step];setBudget(S.budget-price(p));S.team[si]={...p,kind:"new"};checkGoal(p);advance()}
 function useBench(){const si=ORDER[S.step];S.team[si]={...S.c.bench[si],kind:"bench"};advance()}
 function advance(){
   renderPitch();S.step++;
