@@ -182,10 +182,24 @@ button{font-family:inherit;cursor:pointer}
 .back{background:repeating-linear-gradient(45deg,#0b0b0b 0 10px,#121212 10px 20px)}
 .back .em{font-family:Anton,sans-serif;font-size:44px;color:#2c2c2c;border:2px solid #262626;padding:6px 14px}
 .back .tag{position:absolute;bottom:18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:.3em;color:#555}
-.front{background:#000;transform:rotateY(180deg)}
+.front{background:#000;transform:rotateY(180deg);transition:border-color .3s,box-shadow .3s}
 .front .type{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:.3em;color:var(--mgmt);margin-bottom:16px}
 .front h3{font-family:Anton,sans-serif;text-transform:uppercase;font-size:calc(var(--w)*.13);line-height:1.02}
 .front p{color:var(--muted);font-size:max(10px,calc(var(--w)*.065));margin-top:10px;line-height:1.4}
+.front.goal{background:linear-gradient(160deg,#0a1420,#000);box-shadow:inset 0 0 40px rgba(90,168,255,.08)}
+.front.goal .type{color:var(--mgmt)}
+.front.pos{background:linear-gradient(160deg,#0a1f14,#000);box-shadow:inset 0 0 40px rgba(58,255,160,.08)}
+.front.pos .type{color:var(--money)}
+.front.neg{background:linear-gradient(160deg,#200a0a,#000);box-shadow:inset 0 0 40px rgba(255,90,90,.1)}
+.front.neg .type{color:var(--bad)}
+.camt{font-family:Anton,sans-serif;font-size:calc(var(--w)*.17);margin-bottom:4px}
+.camt.pos{color:var(--money)}
+.camt.neg{color:var(--bad)}
+.cardslot.pos{border-color:var(--money);background:linear-gradient(160deg,#071f12,#000)}
+.cardslot.neg{border-color:var(--bad);background:linear-gradient(160deg,#1f0707,#000)}
+.cardslot.pos .t{color:var(--money)}
+.cardslot.neg .t{color:var(--bad)}
+.cardslot .camt{font-size:26px;margin-top:6px}
 #tableBtn{margin-top:clamp(14px,3vh,36px);visibility:hidden;flex:none}
 
 /* END */
@@ -229,7 +243,7 @@ button{font-family:inherit;cursor:pointer}
 <section id="mgrScr" class="screen">
   <div class="topbar">
     <div class="logo" onclick="goHome()">REBUILD<span>XI</span></div>
-    <div class="bud"><small>TOTAL BUDGET</small><div class="budv">$0M</div></div>
+    <div class="bud"><small>TOTAL BUDGET</small><div class="budv">£0M</div></div>
     <div class="club">Rebuilding <b class="clubn"></b></div>
   </div>
   <div class="mstage" id="mstage"></div>
@@ -239,7 +253,7 @@ button{font-family:inherit;cursor:pointer}
 <section id="game" class="screen">
   <div class="topbar">
     <div class="logo" onclick="goHome()">REBUILD<span>XI</span></div>
-    <div class="bud"><small>BUDGET</small><div class="budv">$0M</div></div>
+    <div class="bud"><small>BUDGET</small><div class="budv">£0M</div></div>
     <div class="club">Rebuilding <b class="clubn"></b></div>
   </div>
   <div class="gbody">
@@ -447,15 +461,25 @@ const P=[
 ].map((a,i)=>({id:"p"+i,name:a[0],pos:a[1],club:a[2],league:a[3],nation:a[4],ovr:a[5],val:a[6],age:a[7],apps:a[8],goals:a[9],assists:a[10],ucl:a[11],pot:a[12]}));
 
 const MGMT=[
- {t:"Boardroom Mandate",d:"The board wants more homegrown identity in the dressing room. Sign at least 3 English players.",goal:{type:"nation",val:"England",need:3}},
- {t:"Big-Game Experience",d:"Management believes this group lacks know-how on the biggest nights. Sign at least 2 players with Champions League pedigree.",goal:{type:"ucl",need:2}},
- {t:"Leadership Needed",d:"The board wants proven heads in the dressing room. Sign at least 2 players aged 32 or older.",goal:{type:"ageMin",val:32,need:2}},
- {t:"Build For The Future",d:"Ownership wants young legs for the long term. Sign at least 2 players aged 23 or under.",goal:{type:"ageMax",val:23,need:2}},
- {t:"Widen The Net",d:"Recruitment is tired of recycling the same two leagues. Sign players from at least 3 different leagues.",goal:{type:"leagueSpread",need:3}},
- {t:"Project Signing",d:"Recruitment wants a long-term bet in this window. Sign at least 1 player with real room to grow (potential at least 6 points above their current rating).",goal:{type:"potentialGap",val:6,need:1}},
- {t:"Fire Sale",d:"Every player you sell goes for 25% more.",sale:1.25},
- {t:"Sponsor Deal",d:"A new shirt sponsor adds $20M to your budget right now.",bonus:20},
- {t:"Discount Window",d:"Every signing costs 25% less.",price:.75},
+ // squad mandates - the club's actual footballing needs, told as a story
+ {tag:"SQUAD IDENTITY",t:"Homegrown Push",d:"Fans and pundits keep hammering the club for losing its identity. The board wants more homegrown faces in the squad — sign at least 3 English players.",goal:{type:"nation",val:"England",need:3}},
+ {tag:"RECRUITMENT BRIEF",t:"Big-Game Experience",d:"Management is convinced this group freezes on the biggest nights. Sign at least 2 players with genuine Champions League pedigree.",goal:{type:"ucl",need:2}},
+ {tag:"DRESSING ROOM",t:"Leadership Needed",d:"The dressing room has gone quiet and the board wants senior voices back in it. Sign at least 2 players aged 32 or older.",goal:{type:"ageMin",val:32,need:2}},
+ {tag:"YOUTH POLICY",t:"Build For The Future",d:"Ownership is done paying for short-term fixes and wants the squad's average age heading the other way. Sign at least 2 players aged 23 or under.",goal:{type:"ageMax",val:23,need:2}},
+ {tag:"SCOUTING",t:"Widen The Net",d:"The recruitment team is tired of getting outbid recycling the same two leagues every window. Sign players from at least 3 different leagues.",goal:{type:"leagueSpread",need:3}},
+ {tag:"GAMBLE",t:"Project Signing",d:"The chief scout found one he can't stop talking about and wants the club to take the bet. Sign at least 1 player with real room to grow — potential at least 6 points above their current rating.",goal:{type:"potentialGap",val:6,need:1}},
+ {tag:"TACTICAL NEED",t:"Shore Up The Defense",d:"The back line has leaked soft goals all season and the manager has had enough. Sign at least 2 defenders this window.",goal:{type:"posCount",val:"DEF",need:2}},
+ {tag:"TACTICAL NEED",t:"Control The Middle",d:"This team keeps getting overrun in the middle of the park and the manager wants it fixed now. Sign at least 2 midfielders this window.",goal:{type:"posCount",val:"MID",need:2}},
+ {tag:"TACTICAL NEED",t:"Firepower Needed",d:"Not enough goals are coming from open play and the fans are getting restless. Sign at least 2 forwards this window.",goal:{type:"posCount",val:"FWD",need:2}},
+ {tag:"AMBITION",t:"Make A Statement",d:"Ownership wants a marquee name the fans will actually notice, not another free transfer. Sign at least 1 player for £70M or more.",goal:{type:"priceMin",val:70,need:1}},
+ // money swings - good news and bad news from the boardroom
+ {tag:"LUCKY BREAK",t:"A New Billionaire Owner!",d:"A wealthy businessman has just purchased the club. He's promised immediate investment to help take the team to the next level. Enjoy the extra transfer funds.",amt:75},
+ {tag:"FINANCIAL BOOST",t:"Record Sponsorship Deal!",d:"The club has signed a massive new sponsorship agreement with an international company. The extra revenue is available for transfers right now.",amt:40},
+ {tag:"UNEXPECTED BONUS",t:"Academy Wonderkid Sold!",d:"A rival club has activated the release clause of one of your academy graduates. The surprise sale brings a big profit straight into the transfer budget.",amt:25},
+ {tag:"BAD NEWS",t:"Financial Fair Play Investigation!",d:"The league has opened an investigation into the club's spending and handed down a hefty fine, eating straight into the transfer budget.",amt:-50},
+ {tag:"TRANSFER DRAMA",t:"Takeover Bid!",d:"An overseas investment group has approached the club with a takeover offer, promising a massive injection into the transfer budget.",amt:100},
+ {tag:"BOARDROOM PUSH",t:"Clear The Deadwood!",d:"The board wants fringe players moved on fast to free up wages. Every player you sell this window goes for 25% more.",sale:1.25},
+ {tag:"AGENT CONNECTIONS",t:"A Favour Called In!",d:"Your director of football has a contact at every major agency this week. Every signing this window costs 25% less.",price:.75},
 ];
 
 /* ---------- STORAGE ---------- */
@@ -491,8 +515,8 @@ function calClick(k,locked){
 /* ---------- STATE ---------- */
 let S;
 function setBudget(v){
-  S.budget=Math.round(v);
-  document.querySelectorAll(".budv").forEach(e=>{e.textContent=`$${S.budget}M`;e.classList.remove("flash");void e.offsetWidth;e.classList.add("flash")});
+  S.budget=Math.max(0,Math.round(v));
+  document.querySelectorAll(".budv").forEach(e=>{e.textContent=`£${S.budget}M`;e.classList.remove("flash");void e.offsetWidth;e.classList.add("flash")});
 }
 function startChallenge(key){
   const c=CHALLENGES[key];
@@ -507,13 +531,13 @@ function renderMgr(){
   const c=S.c,m=c.manager;
   let h=`<div class="mlabel">Step 1 · The Manager</div>
    <div class="mcur"><div class="mcard ${S.mgrSold?"sold":""}"><div class="ovr">${m.ovr}</div><div class="role">CURRENT MANAGER</div>
-     <div class="nm">${m.name}</div><div class="worth">Sell value <b>$${m.val}M</b></div></div>`;
+     <div class="nm">${m.name}</div><div class="worth">Sell value <b>£${m.val}M</b></div></div>`;
   if(!S.mgrSold){
-    h+=`<div class="mact"><button class="gbtn k" onclick="keepMgr()">Keep him</button><button class="gbtn r" onclick="sellMgr()">Sell · +$${m.val}M</button></div></div>`;
+    h+=`<div class="mact"><button class="gbtn k" onclick="keepMgr()">Keep him</button><button class="gbtn r" onclick="sellMgr()">Sell · +£${m.val}M</button></div></div>`;
   }else{
     h+=`</div><div class="mlabel" style="color:#fff">Pick his replacement</div><div class="mopts">`+
       c.mgrOptions.map((o,i)=>{const ok=o[2]<=S.budget;return `<button class="mo ${ok?"":"no"}" ${ok?`onclick="hireMgr(${i})"`:""}>
-        <div class="tier">${["BUDGET","MID","TOP"][i]} OPTION</div><div class="ovr">${o[1]}</div><div class="nm">${o[0]}</div><div class="from">${o[3]}</div><div class="price">$${o[2]}M</div></button>`}).join("")+`</div>`;
+        <div class="tier">${["BUDGET","MID","TOP"][i]} OPTION</div><div class="ovr">${o[1]}</div><div class="nm">${o[0]}</div><div class="from">${o[3]}</div><div class="price">£${o[2]}M</div></button>`}).join("")+`</div>`;
   }
   $("mstage").innerHTML=h;
 }
@@ -539,7 +563,7 @@ function renderPanel(){
   let h=`<div class="prow">
      <div class="mini"><small>MANAGER</small><b>${S.mgr.name}</b><span class="o">${S.mgr.ovr}</span></div>
    </div>
-   <div class="cardslot ${card?"has":""}">${card?`<div class="t">MANAGEMENT CARD</div><h4>${card.t}</h4><p>${card.d}</p>${card.goal?`<div class="goalp ${S.goalDone?"done":""}">${S.goalDone?"✓ Mandate complete (+$15M)":goalLabel(card.goal)}</div>`:""}`:`<div class="empty">NO CARD YET</div>`}</div>
+   <div class="cardslot ${card?"has "+(card.goal?"goal":(card.amt<0?"neg":"pos")):""}">${card?`<div class="t">${card.tag}</div><h4>${card.t}</h4><p>${card.d}</p>${card.amt?`<div class="camt ${card.amt<0?"neg":"pos"}">${card.amt<0?"−":"+"}£${Math.abs(card.amt)}M</div>`:""}${card.goal?`<div class="goalp ${S.goalDone?"done":""}">${S.goalDone?"✓ Mandate complete (+£15M)":goalLabel(card.goal)}</div>`:""}`:`<div class="empty">NO CARD YET</div>`}</div>
    <div class="prog">${ORDER.map((_,i)=>`<i class="${i<S.step?"d":i===S.step?"c":""}"></i>`).join("")}</div>
    <div class="center" id="center"></div>`;
   $("panel").innerHTML=h;
@@ -551,13 +575,13 @@ function renderPanel(){
   }else if(S.stage==="pos"){
     const si=ORDER[S.step],cur=S.c.xi[si],sv=saleVal(cur);
     c.innerHTML=`<div class="poslbl">POSITION ${S.step+1} OF 11</div><div class="posname">${SLOTS[si].name}</div>
-      <div class="pcard"><div class="o">${cur.ovr}</div><div class="i"><b>${cur.name}</b><small>Current starter</small></div><div class="v">$${sv}M</div></div>
-      <div class="kbtns"><button class="gbtn k" onclick="keepPlayer()">Keep</button><button class="gbtn r" onclick="sellPlayer()">Sell +$${sv}M</button></div>`;
+      <div class="pcard"><div class="o">${cur.ovr}</div><div class="i"><b>${cur.name}</b><small>Current starter</small></div><div class="v">£${sv}M</div></div>
+      <div class="kbtns"><button class="gbtn k" onclick="keepPlayer()">Keep</button><button class="gbtn r" onclick="sellPlayer()">Sell +£${sv}M</button></div>`;
   }else if(S.stage==="replace"){
     const si=ORDER[S.step],opts=S.opts,bench=S.c.bench[si];
     c.innerHTML=`<div class="poslbl">REPLACE YOUR</div><div class="posname" style="font-size:44px">${SLOTS[si].name}</div>
       <div class="opts">${opts.map((p,i)=>{const pr=price(p),ok=pr<=S.budget;return `<div class="opt ${ok?"":"no"}" ${ok?`onclick="sign(${i})"`:""}>
-        <div class="optrow"><div class="o">${p.ovr}</div><div class="i"><small>${["BUDGET","MID","TOP"][i]} OPTION${p.pot-p.ovr>=5?` · <span class="potbadge">POT ${p.pot}</span>`:""}</small><b>${p.name}</b><span>${p.club} · ${p.league}</span></div><div class="p">$${pr}M</div></div>
+        <div class="optrow"><div class="o">${p.ovr}</div><div class="i"><small>${["BUDGET","MID","TOP"][i]} OPTION${p.pot-p.ovr>=5?` · <span class="potbadge">POT ${p.pot}</span>`:""}</small><b>${p.name}</b><span>${p.club} · ${p.league}</span></div><div class="p">£${pr}M</div></div>
         <button class="statsToggle" onclick="event.stopPropagation();toggleStats(${i})">Stats ▾</button>
         <div class="stats" id="stats${i}">Age ${p.age} · ${p.apps} apps · ${p.goals}G ${p.assists}A last season · Potential ${p.pot} · ${p.ucl?"Champions League experience":"No Champions League experience"}</div>
       </div>`}).join("")}
@@ -575,9 +599,13 @@ function dealCards(){
   S.deal=opts;
   $("tableKick").textContent=`MANAGEMENT CARD ${S.cardIdx+1} OF ${CARD_AT.length}`;
   $("tableTitle").textContent="Pick a card";
-  $("deck").innerHTML=opts.map((c,i)=>`<div class="fc" id="fc${i}"><div class="fc-in" onclick="chooseCard(${i})">
+  $("deck").innerHTML=opts.map((c,i)=>{
+    const kind=c.goal?"goal":(c.amt<0?"neg":"pos");
+    const amtHtml=c.amt?`<div class="camt ${c.amt<0?"neg":"pos"}">${c.amt<0?"−":"+"}£${Math.abs(c.amt)}M</div>`:"";
+    return `<div class="fc" id="fc${i}"><div class="fc-in" onclick="chooseCard(${i})">
      <div class="face back"><div class="em">XI</div><div class="tag">MANAGEMENT</div></div>
-     <div class="face front"><div class="type">MANAGEMENT CARD</div><h3>${c.t}</h3><p>${c.d}</p></div></div></div>`).join("");
+     <div class="face front ${kind}"><div class="type">${c.tag}</div>${amtHtml}<h3>${c.t}</h3><p>${c.d}</p></div></div></div>`;
+  }).join("");
   $("tableBtn").style.visibility="hidden";
   $("table").classList.add("on");
   // start every card stacked in the top-left corner, then deal them into place
@@ -604,7 +632,7 @@ function chooseCard(i){
   $("tableTitle").textContent=c.t;
   setTimeout(()=>S.deal.forEach((_,j)=>{if(j!==i)$("fc"+j).classList.add("flipped","dim")}),700);
   setTimeout(()=>$("tableBtn").style.visibility="visible",1100);
-  if(c.bonus)setTimeout(()=>setBudget(S.budget+c.bonus),900);
+  if(c.amt)setTimeout(()=>setBudget(S.budget+c.amt),900);
 }
 function closeTable(){$("table").classList.remove("on");$("deck").innerHTML="";renderPanel()}
 
@@ -637,19 +665,28 @@ function goalLabel(g){
   if(g.type==="ageMax")return `${S.goalCount}/${g.need} signings aged ${g.val} or under`;
   if(g.type==="leagueSpread")return `${S.goalCount}/${g.need} different leagues signed from`;
   if(g.type==="potentialGap")return `${S.goalCount}/${g.need} high-potential signings`;
+  if(g.type==="posCount")return `${S.goalCount}/${g.need} ${({DEF:"defender",MID:"midfielder",FWD:"forward"})[g.val]} signings`;
+  if(g.type==="priceMin")return `${S.goalCount}/${g.need} signings worth £${g.val}M+`;
   return "";
 }
-function checkGoal(p){
+function checkGoal(p,pr){
   const card=S.card;if(!card||!card.goal||S.goalDone)return;
   const g=card.goal;
   if(g.type==="leagueSpread"){S.goalLeagues.add(p.league);S.goalCount=S.goalLeagues.size}
   else{
-    const hit=g.type==="nation"?p.nation===g.val:g.type==="ucl"?p.ucl:g.type==="ageMin"?p.age>=g.val:g.type==="ageMax"?p.age<=g.val:g.type==="potentialGap"?(p.pot-p.ovr)>=g.val:false;
+    const hit=g.type==="nation"?p.nation===g.val
+      :g.type==="ucl"?p.ucl
+      :g.type==="ageMin"?p.age>=g.val
+      :g.type==="ageMax"?p.age<=g.val
+      :g.type==="potentialGap"?(p.pot-p.ovr)>=g.val
+      :g.type==="posCount"?p.pos===g.val
+      :g.type==="priceMin"?pr>=g.val
+      :false;
     if(hit)S.goalCount++;
   }
   if(S.goalCount>=g.need){S.goalDone=true;setBudget(S.budget+15)}
 }
-function sign(i){const p=S.opts[i],si=ORDER[S.step];setBudget(S.budget-price(p));S.team[si]={...p,kind:"new"};checkGoal(p);advance()}
+function sign(i){const p=S.opts[i],si=ORDER[S.step],pr=price(p);setBudget(S.budget-pr);S.team[si]={...p,kind:"new"};checkGoal(p,pr);advance()}
 function useBench(){const si=ORDER[S.step];S.team[si]={...S.c.bench[si],kind:"bench"};advance()}
 function advance(){
   renderPitch();S.step++;
@@ -666,7 +703,7 @@ function finish(){
   const d=store.get();d[S.key]=Math.max(d[S.key]||0,o);store.set(d);
   $("endOvr").textContent=o;
   $("grade").textContent=o>=89?"Ballon d'Or squad":o>=87?"Champions League winners":o>=85?"Title contenders":o>=83?"Top four":"Rebuild the rebuild";
-  $("cmp").innerHTML=`Original ${S.c.club} <b>${orig}</b> · Yours <b>${o}</b> (${o-orig>=0?"+":""}${o-orig}) · <b>$${S.budget}M</b> left`;
+  $("cmp").innerHTML=`Original ${S.c.club} <b>${orig}</b> · Yours <b>${o}</b> (${o-orig>=0?"+":""}${o-orig}) · <b>£${S.budget}M</b> left`;
   $("endOv").classList.add("on");
 }
 </script>
