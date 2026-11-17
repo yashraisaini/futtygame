@@ -462,25 +462,17 @@ const P=[
 ].map((a,i)=>({id:"p"+i,name:a[0],pos:a[1],club:a[2],league:a[3],nation:a[4],ovr:a[5],val:a[6],age:a[7],apps:a[8],goals:a[9],assists:a[10],ucl:a[11],pot:a[12]}));
 
 const MGMT=[
- // squad mandates - the club's actual footballing needs, told as a story
- {tag:"SQUAD IDENTITY",t:"Homegrown Push",d:"Fans and pundits keep hammering the club for losing its identity. The board wants more homegrown faces in the squad — sign at least 3 English players.",goal:{type:"nation",val:"England",need:3}},
- {tag:"RECRUITMENT BRIEF",t:"Big-Game Experience",d:"Management is convinced this group freezes on the biggest nights. Sign at least 2 players with genuine Champions League pedigree.",goal:{type:"ucl",need:2}},
- {tag:"DRESSING ROOM",t:"Leadership Needed",d:"The dressing room has gone quiet and the board wants senior voices back in it. Sign at least 2 players aged 32 or older.",goal:{type:"ageMin",val:32,need:2}},
- {tag:"YOUTH POLICY",t:"Build For The Future",d:"Ownership is done paying for short-term fixes and wants the squad's average age heading the other way. Sign at least 2 players aged 23 or under.",goal:{type:"ageMax",val:23,need:2}},
- {tag:"SCOUTING",t:"Widen The Net",d:"The recruitment team is tired of getting outbid recycling the same two leagues every window. Sign players from at least 3 different leagues.",goal:{type:"leagueSpread",need:3}},
- {tag:"GAMBLE",t:"Project Signing",d:"The chief scout found one he can't stop talking about and wants the club to take the bet. Sign at least 1 player with real room to grow — potential at least 6 points above their current rating.",goal:{type:"potentialGap",val:6,need:1}},
- {tag:"TACTICAL NEED",t:"Shore Up The Defense",d:"The back line has leaked soft goals all season and the manager has had enough. Sign at least 2 defenders this window.",goal:{type:"posCount",val:"DEF",need:2}},
- {tag:"TACTICAL NEED",t:"Control The Middle",d:"This team keeps getting overrun in the middle of the park and the manager wants it fixed now. Sign at least 2 midfielders this window.",goal:{type:"posCount",val:"MID",need:2}},
- {tag:"TACTICAL NEED",t:"Firepower Needed",d:"Not enough goals are coming from open play and the fans are getting restless. Sign at least 2 forwards this window.",goal:{type:"posCount",val:"FWD",need:2}},
- {tag:"AMBITION",t:"Make A Statement",d:"Ownership wants a marquee name the fans will actually notice, not another free transfer. Sign at least 1 player for £70M or more.",goal:{type:"priceMin",val:70,need:1}},
- // money swings - good news and bad news from the boardroom
- {tag:"LUCKY BREAK",t:"A New Billionaire Owner!",d:"A wealthy businessman has just purchased the club. He's promised immediate investment to help take the team to the next level. Enjoy the extra transfer funds.",amt:75},
- {tag:"FINANCIAL BOOST",t:"Record Sponsorship Deal!",d:"The club has signed a massive new sponsorship agreement with an international company. The extra revenue is available for transfers right now.",amt:40},
- {tag:"UNEXPECTED BONUS",t:"Academy Wonderkid Sold!",d:"A rival club has activated the release clause of one of your academy graduates. The surprise sale brings a big profit straight into the transfer budget.",amt:25},
- {tag:"BAD NEWS",t:"Financial Fair Play Investigation!",d:"The league has opened an investigation into the club's spending and handed down a hefty fine, eating straight into the transfer budget.",amt:-50},
- {tag:"TRANSFER DRAMA",t:"Takeover Bid!",d:"An overseas investment group has approached the club with a takeover offer, promising a massive injection into the transfer budget.",amt:100,kind:"drama"},
- {tag:"BOARDROOM PUSH",t:"Clear The Deadwood!",d:"The board wants fringe players moved on fast to free up wages. Every player you sell this window goes for 25% more.",sale:1.25,kind:"drama"},
- {tag:"AGENT CONNECTIONS",t:"A Favour Called In!",d:"Your director of football has a contact at every major agency this week. Every signing this window costs 25% less.",price:.75,kind:"drama"},
+ // squad mandates - the club's actual footballing needs, told as a story. no money cards: every card is a commitment that shapes who you sign.
+ {tag:"SQUAD IDENTITY",t:"Homegrown Push",d:"Fans and pundits keep hammering the club for losing its identity. The board wants more homegrown faces in the squad — sign at least 3 English players.",goal:{type:"nation",val:"England",need:3},kind:"goal"},
+ {tag:"RECRUITMENT BRIEF",t:"Big-Game Experience",d:"Management is convinced this group freezes on the biggest nights. Sign at least 2 players with genuine Champions League pedigree.",goal:{type:"ucl",need:2},kind:"drama"},
+ {tag:"DRESSING ROOM",t:"Leadership Needed",d:"The dressing room has gone quiet and the board wants senior voices back in it. Sign at least 2 players aged 32 or older.",goal:{type:"ageMin",val:32,need:2},kind:"drama"},
+ {tag:"YOUTH POLICY",t:"Build For The Future",d:"Ownership is done paying for short-term fixes and wants the squad's average age heading the other way. Sign at least 2 players aged 23 or under.",goal:{type:"ageMax",val:23,need:2},kind:"pos"},
+ {tag:"SCOUTING",t:"Widen The Net",d:"The recruitment team is tired of getting outbid recycling the same two leagues every window. Sign players from at least 3 different leagues.",goal:{type:"leagueSpread",need:3},kind:"goal"},
+ {tag:"GAMBLE",t:"Project Signing",d:"The chief scout found one he can't stop talking about and wants the club to take the bet. Sign at least 1 player with real room to grow — potential at least 6 points above their current rating.",goal:{type:"potentialGap",val:6,need:1},kind:"pos"},
+ {tag:"TACTICAL NEED",t:"Shore Up The Defense",d:"The back line has leaked soft goals all season and the manager has had enough. Sign at least 2 defenders this window.",goal:{type:"posCount",val:"DEF",need:2},kind:"neg"},
+ {tag:"TACTICAL NEED",t:"Control The Middle",d:"This team keeps getting overrun in the middle of the park and the manager wants it fixed now. Sign at least 2 midfielders this window.",goal:{type:"posCount",val:"MID",need:2},kind:"neg"},
+ {tag:"TACTICAL NEED",t:"Firepower Needed",d:"Not enough goals are coming from open play and the fans are getting restless. Sign at least 2 forwards this window.",goal:{type:"posCount",val:"FWD",need:2},kind:"neg"},
+ {tag:"AMBITION",t:"Make A Statement",d:"Ownership wants a marquee name the fans will actually notice, not another free transfer. Sign at least 1 player for £70M or more.",goal:{type:"priceMin",val:70,need:1},kind:"drama"},
 ];
 
 /* ---------- STORAGE ---------- */
