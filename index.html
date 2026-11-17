@@ -6,7 +6,8 @@
 <title>Rebuild XI</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Anton&family=Barlow+Condensed:wght@500;600;700;800&display=swap');
-:root{--bg:#000;--panel:#0b0b0b;--line:#222;--text:#fff;--muted:#8a8a8a;--accent:#d4ff3a;--money:#3affa0;--mgmt:#5aa8ff;--bad:#ff5a5a}
+:root{--bg:#000;--panel:#0b0b0b;--line:#222;--text:#fff;--muted:#8a8a8a;--accent:#d4ff3a;--money:#3affa0;--mgmt:#5aa8ff;--bad:#ff5a5a;--spec:#ffc94d;
+  --mgricon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 150' fill='white'%3E%3Ccircle cx='50' cy='18' r='15'/%3E%3Cpath d='M28 36 L72 36 L80 100 L20 100 Z'/%3E%3Cpath d='M30 100 L44 100 L40 148 L32 148 Z'/%3E%3Cpath d='M70 100 L56 100 L60 148 L68 148 Z'/%3E%3Crect x='34' y='58' width='32' height='36' rx='3'/%3E%3Crect x='40' y='64' width='20' height='3'/%3E%3Crect x='40' y='72' width='20' height='3'/%3E%3Crect x='40' y='80' width='14' height='3'/%3E%3C/svg%3E")}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:#000;color:#fff;font-family:Inter,system-ui,sans-serif;overflow:hidden}
@@ -124,11 +125,12 @@ button{font-family:inherit;cursor:pointer}
 .mini small{display:block;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.2em;color:var(--muted);font-size:11px}
 .mini b{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;font-size:18px}
 .mini .o{font-family:Anton,sans-serif;font-size:18px;float:right}
-.cardslot{border:1px dashed #333;border-radius:4px;padding:14px;min-height:96px}
-.cardslot.has{border:1px solid var(--mgmt);background:linear-gradient(160deg,#07121f,#000)}
-.cardslot .t{font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.22em;color:var(--mgmt);font-size:11px}
-.cardslot h4{font-family:Anton,sans-serif;font-size:24px;text-transform:uppercase;margin:6px 0 4px}
-.cardslot p{color:var(--muted);font-size:13px;line-height:1.4}
+.cardslot{position:relative;overflow:hidden;border:1px dashed #333;border-radius:4px;padding:14px;min-height:96px}
+.cardslot.has{border:1px solid var(--mgmt);background:linear-gradient(160deg,#07121f,#000);color:var(--mgmt)}
+.cardslot::after{content:"";z-index:0;position:absolute;right:-5%;bottom:-8%;width:46%;height:120%;-webkit-mask:var(--mgricon) no-repeat center/contain;mask:var(--mgricon) no-repeat center/contain;background:currentColor;opacity:.1;pointer-events:none}
+.cardslot .t{position:relative;z-index:1;font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.22em;color:inherit;font-size:11px}
+.cardslot h4{position:relative;z-index:1;color:#fff;font-family:Anton,sans-serif;font-size:24px;text-transform:uppercase;margin:6px 0 4px}
+.cardslot p{position:relative;z-index:1;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:14px;line-height:1.35}
 .cardslot .empty{color:#444;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.2em;font-size:12px;height:66px;display:flex;align-items:center;justify-content:center}
 .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center}
 .center .gbtn{justify-content:center}
@@ -161,7 +163,7 @@ button{font-family:inherit;cursor:pointer}
 .statsToggle{align-self:flex-start;margin-top:10px;background:none;border:0;color:var(--mgmt);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:0}
 .stats{display:none;margin-top:8px;padding-top:8px;border-top:1px solid #222;font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
 .stats.open{display:block}
-.goalp{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--mgmt);margin-top:6px;text-transform:uppercase}
+.goalp{position:relative;z-index:1;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:.08em;color:var(--mgmt);margin-top:6px;text-transform:uppercase}
 .goalp.done{color:var(--money)}
 .potbadge{color:var(--money)}
 .prog{display:flex;gap:4px}
@@ -172,34 +174,33 @@ button{font-family:inherit;cursor:pointer}
 .table.on{display:flex}
 .table h2{font-family:Anton,sans-serif;text-transform:uppercase;font-size:clamp(22px,4vw,48px);margin:6px 0 clamp(12px,3vh,34px);text-align:center}
 .deck{display:flex;gap:clamp(8px,1.5vw,20px);flex-wrap:nowrap;justify-content:center}
-.fc{--w:min(200px,21vw,30vh);width:var(--w);height:calc(var(--w)*1.43);perspective:1000px;flex:none}
+.fc{--w:min(200px,21vw,30vh);width:var(--w);height:calc(var(--w)*1.6);perspective:1000px;flex:none}
 .fc-in{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.2,.8,.2,1),translate .2s;transform-style:preserve-3d;cursor:pointer}
 .fc.ready:not(.flipped):not(.dim) .fc-in:hover{translate:0 -14px}
 .fc.flipped .fc-in{transform:rotateY(180deg);cursor:default}
 .fc.dim{filter:brightness(.35)}
 .fc.chosen .front{border-color:var(--accent);box-shadow:0 0 34px rgba(212,255,58,.3)}
-.face{position:absolute;inset:0;border-radius:6px;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;border:1px solid #333;text-align:center}
+.face{position:absolute;inset:0;border-radius:8px;backface-visibility:hidden;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;border:2px solid #333;text-align:center}
 .back{background:repeating-linear-gradient(45deg,#0b0b0b 0 10px,#121212 10px 20px)}
 .back .em{font-family:Anton,sans-serif;font-size:44px;color:#2c2c2c;border:2px solid #262626;padding:6px 14px}
 .back .tag{position:absolute;bottom:18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:.3em;color:#555}
 .front{background:#000;transform:rotateY(180deg);transition:border-color .3s,box-shadow .3s}
-.front .type{font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:.3em;color:var(--mgmt);margin-bottom:16px}
-.front h3{font-family:Anton,sans-serif;text-transform:uppercase;font-size:calc(var(--w)*.13);line-height:1.02}
-.front p{color:var(--muted);font-size:max(10px,calc(var(--w)*.065));margin-top:10px;line-height:1.4}
-.front.goal{background:linear-gradient(160deg,#0a1420,#000);box-shadow:inset 0 0 40px rgba(90,168,255,.08)}
-.front.goal .type{color:var(--mgmt)}
-.front.pos{background:linear-gradient(160deg,#0a1f14,#000);box-shadow:inset 0 0 40px rgba(58,255,160,.08)}
-.front.pos .type{color:var(--money)}
-.front.neg{background:linear-gradient(160deg,#200a0a,#000);box-shadow:inset 0 0 40px rgba(255,90,90,.1)}
-.front.neg .type{color:var(--bad)}
-.camt{font-family:Anton,sans-serif;font-size:calc(var(--w)*.17);margin-bottom:4px}
+.front::after{content:"";z-index:0;position:absolute;right:-10%;bottom:-6%;width:58%;height:78%;-webkit-mask:var(--mgricon) no-repeat center/contain;mask:var(--mgricon) no-repeat center/contain;background:currentColor;opacity:.09;pointer-events:none}
+.front .type{position:relative;z-index:1;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:.28em;margin-bottom:10px}
+.front h3{position:relative;z-index:1;color:#fff;font-family:Anton,sans-serif;text-transform:uppercase;font-size:calc(var(--w)*.105);line-height:1.04;margin-bottom:4px}
+.front p{position:relative;z-index:1;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:max(9.5px,calc(var(--w)*.057));margin-top:7px;line-height:1.3}
+.front.goal{color:var(--mgmt);background:linear-gradient(160deg,#0a1420,#000);box-shadow:inset 0 0 40px rgba(90,168,255,.08)}
+.front.pos{color:var(--money);background:linear-gradient(160deg,#0a1f14,#000);box-shadow:inset 0 0 40px rgba(58,255,160,.08)}
+.front.neg{color:var(--bad);background:linear-gradient(160deg,#200a0a,#000);box-shadow:inset 0 0 40px rgba(255,90,90,.1)}
+.front.drama{color:var(--spec);background:linear-gradient(160deg,#241607,#000);box-shadow:inset 0 0 40px rgba(255,201,77,.1)}
+.camt{position:relative;z-index:1;font-family:Anton,sans-serif;font-size:calc(var(--w)*.135);margin-bottom:2px}
 .camt.pos{color:var(--money)}
 .camt.neg{color:var(--bad)}
-.cardslot.pos{border-color:var(--money);background:linear-gradient(160deg,#071f12,#000)}
-.cardslot.neg{border-color:var(--bad);background:linear-gradient(160deg,#1f0707,#000)}
-.cardslot.pos .t{color:var(--money)}
-.cardslot.neg .t{color:var(--bad)}
+.cardslot.pos{border-color:var(--money);background:linear-gradient(160deg,#071f12,#000);color:var(--money)}
+.cardslot.neg{border-color:var(--bad);background:linear-gradient(160deg,#1f0707,#000);color:var(--bad)}
+.cardslot.drama{border-color:var(--spec);background:linear-gradient(160deg,#241607,#000);color:var(--spec)}
 .cardslot .camt{font-size:26px;margin-top:6px}
+.empty{position:relative;z-index:1}
 #tableBtn{margin-top:clamp(14px,3vh,36px);visibility:hidden;flex:none}
 
 /* END */
@@ -477,9 +478,9 @@ const MGMT=[
  {tag:"FINANCIAL BOOST",t:"Record Sponsorship Deal!",d:"The club has signed a massive new sponsorship agreement with an international company. The extra revenue is available for transfers right now.",amt:40},
  {tag:"UNEXPECTED BONUS",t:"Academy Wonderkid Sold!",d:"A rival club has activated the release clause of one of your academy graduates. The surprise sale brings a big profit straight into the transfer budget.",amt:25},
  {tag:"BAD NEWS",t:"Financial Fair Play Investigation!",d:"The league has opened an investigation into the club's spending and handed down a hefty fine, eating straight into the transfer budget.",amt:-50},
- {tag:"TRANSFER DRAMA",t:"Takeover Bid!",d:"An overseas investment group has approached the club with a takeover offer, promising a massive injection into the transfer budget.",amt:100},
- {tag:"BOARDROOM PUSH",t:"Clear The Deadwood!",d:"The board wants fringe players moved on fast to free up wages. Every player you sell this window goes for 25% more.",sale:1.25},
- {tag:"AGENT CONNECTIONS",t:"A Favour Called In!",d:"Your director of football has a contact at every major agency this week. Every signing this window costs 25% less.",price:.75},
+ {tag:"TRANSFER DRAMA",t:"Takeover Bid!",d:"An overseas investment group has approached the club with a takeover offer, promising a massive injection into the transfer budget.",amt:100,kind:"drama"},
+ {tag:"BOARDROOM PUSH",t:"Clear The Deadwood!",d:"The board wants fringe players moved on fast to free up wages. Every player you sell this window goes for 25% more.",sale:1.25,kind:"drama"},
+ {tag:"AGENT CONNECTIONS",t:"A Favour Called In!",d:"Your director of football has a contact at every major agency this week. Every signing this window costs 25% less.",price:.75,kind:"drama"},
 ];
 
 /* ---------- STORAGE ---------- */
@@ -563,7 +564,7 @@ function renderPanel(){
   let h=`<div class="prow">
      <div class="mini"><small>MANAGER</small><b>${S.mgr.name}</b><span class="o">${S.mgr.ovr}</span></div>
    </div>
-   <div class="cardslot ${card?"has "+(card.goal?"goal":(card.amt<0?"neg":"pos")):""}">${card?`<div class="t">${card.tag}</div><h4>${card.t}</h4><p>${card.d}</p>${card.amt?`<div class="camt ${card.amt<0?"neg":"pos"}">${card.amt<0?"−":"+"}£${Math.abs(card.amt)}M</div>`:""}${card.goal?`<div class="goalp ${S.goalDone?"done":""}">${S.goalDone?"✓ Mandate complete (+£15M)":goalLabel(card.goal)}</div>`:""}`:`<div class="empty">NO CARD YET</div>`}</div>
+   <div class="cardslot ${card?"has "+(card.kind||(card.goal?"goal":(card.amt<0?"neg":"pos"))):""}">${card?`<div class="t">${card.tag}</div><h4>${card.t}</h4><p>${card.d}</p>${card.amt?`<div class="camt ${card.amt<0?"neg":"pos"}">${card.amt<0?"−":"+"}£${Math.abs(card.amt)}M</div>`:""}${card.goal?`<div class="goalp ${S.goalDone?"done":""}">${S.goalDone?"✓ Mandate complete (+£15M)":goalLabel(card.goal)}</div>`:""}`:`<div class="empty">NO CARD YET</div>`}</div>
    <div class="prog">${ORDER.map((_,i)=>`<i class="${i<S.step?"d":i===S.step?"c":""}"></i>`).join("")}</div>
    <div class="center" id="center"></div>`;
   $("panel").innerHTML=h;
@@ -600,7 +601,7 @@ function dealCards(){
   $("tableKick").textContent=`MANAGEMENT CARD ${S.cardIdx+1} OF ${CARD_AT.length}`;
   $("tableTitle").textContent="Pick a card";
   $("deck").innerHTML=opts.map((c,i)=>{
-    const kind=c.goal?"goal":(c.amt<0?"neg":"pos");
+    const kind=c.kind||(c.goal?"goal":(c.amt<0?"neg":"pos"));
     const amtHtml=c.amt?`<div class="camt ${c.amt<0?"neg":"pos"}">${c.amt<0?"−":"+"}£${Math.abs(c.amt)}M</div>`:"";
     return `<div class="fc" id="fc${i}"><div class="fc-in" onclick="chooseCard(${i})">
      <div class="face back"><div class="em">XI</div><div class="tag">MANAGEMENT</div></div>
