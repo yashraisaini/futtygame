@@ -7,7 +7,7 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Anton&family=Barlow+Condensed:wght@500;600;700;800&display=swap');
 :root{--bg:#000;--panel:#0b0b0b;--line:#222;--text:#fff;--muted:#8a8a8a;--accent:#d4ff3a;--money:#3affa0;--mgmt:#5aa8ff;--bad:#ff5a5a;--spec:#ffc94d;
-  --mgricon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 150' fill='white'%3E%3Ccircle cx='50' cy='18' r='15'/%3E%3Cpath d='M28 36 L72 36 L80 100 L20 100 Z'/%3E%3Cpath d='M30 100 L44 100 L40 148 L32 148 Z'/%3E%3Cpath d='M70 100 L56 100 L60 148 L68 148 Z'/%3E%3Crect x='34' y='58' width='32' height='36' rx='3'/%3E%3Crect x='40' y='64' width='20' height='3'/%3E%3Crect x='40' y='72' width='20' height='3'/%3E%3Crect x='40' y='80' width='14' height='3'/%3E%3C/svg%3E")}
+  --mgricon:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 130' fill='white'%3E%3Cellipse cx='50' cy='18' rx='14' ry='16'/%3E%3Crect x='43' y='31' width='14' height='13'/%3E%3Cpath d='M16 60C16 45 32 36 50 36C68 36 84 45 84 60L90 114L10 114Z'/%3E%3Crect x='20' y='83' width='60' height='16' rx='8' transform='rotate(-15 50 91)'/%3E%3Crect x='20' y='83' width='60' height='16' rx='8' transform='rotate(15 50 91)'/%3E%3C/svg%3E")}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:#000;color:#fff;font-family:Inter,system-ui,sans-serif;overflow:hidden}
@@ -127,11 +127,20 @@ button{font-family:inherit;cursor:pointer}
 .mini .o{font-family:Anton,sans-serif;font-size:18px;float:right}
 .cardslot{position:relative;overflow:hidden;border:1px dashed #333;border-radius:4px;padding:14px;min-height:96px}
 .cardslot.has{border:1px solid var(--mgmt);background:linear-gradient(160deg,#07121f,#000);color:var(--mgmt)}
-.cardslot::after{content:"";z-index:0;position:absolute;right:-5%;bottom:-8%;width:46%;height:120%;-webkit-mask:var(--mgricon) no-repeat center/contain;mask:var(--mgricon) no-repeat center/contain;background:currentColor;opacity:.1;pointer-events:none}
+.cardslot::after{content:"";z-index:0;position:absolute;right:-6%;bottom:-10%;width:52%;height:132%;-webkit-mask:var(--mgricon) no-repeat center/contain;mask:var(--mgricon) no-repeat center/contain;background:currentColor;opacity:.16;pointer-events:none}
 .cardslot .t{position:relative;z-index:1;font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.22em;color:inherit;font-size:11px}
 .cardslot h4{position:relative;z-index:1;color:#fff;font-family:Anton,sans-serif;font-size:24px;text-transform:uppercase;margin:6px 0 4px}
 .cardslot p{position:relative;z-index:1;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:14px;line-height:1.35}
 .cardslot .empty{color:#444;font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.2em;font-size:12px;height:66px;display:flex;align-items:center;justify-content:center}
+.mandBtn{cursor:pointer;user-select:none;border:1px solid #2a2a2a;border-radius:6px;padding:14px 16px;text-align:center;background:linear-gradient(160deg,#141414,#0a0a0a);
+  box-shadow:0 6px 0 #000,0 8px 16px rgba(0,0,0,.45);transform:translateY(0);transition:transform .08s ease,box-shadow .08s ease,filter .15s}
+.mandBtn:hover{filter:brightness(1.15)}
+.mandBtn:active{transform:translateY(6px);box-shadow:0 0 0 #000,0 2px 6px rgba(0,0,0,.3)}
+.mandBtn.off{opacity:.45;cursor:default}
+.mandBtn.off:active{transform:none;box-shadow:0 6px 0 #000,0 8px 16px rgba(0,0,0,.45)}
+.mandBtn .lbl{font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.2em;font-size:11px;color:var(--muted);text-transform:uppercase}
+.mandBtn .cnt{font-family:Anton,sans-serif;font-size:24px;margin-top:6px;color:var(--accent)}
+.mandBtn .cnt small{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;color:var(--muted);letter-spacing:.04em}
 .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center}
 .center .gbtn{justify-content:center}
 .poslbl{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.3em;color:var(--muted);font-size:12px}
@@ -170,25 +179,30 @@ button{font-family:inherit;cursor:pointer}
 .prog i{flex:1;height:3px;background:#222}.prog i.d{background:#fff}.prog i.c{background:var(--accent)}
 
 /* CARD TABLE */
-.table{position:fixed;inset:0;background:rgba(0,0,0,.92);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:20;padding:16px;overflow:auto}
+.table{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:20;padding:clamp(16px,4vw,56px);overflow:auto}
 .table.on{display:flex}
+.tablePanel{display:flex;flex-direction:column;align-items:center;max-width:min(1400px,94vw);width:100%;padding:clamp(20px,3vw,48px) clamp(16px,3vw,40px);border:1px solid rgba(255,255,255,.1);border-radius:22px;background:rgba(8,8,8,.55);box-shadow:0 30px 80px rgba(0,0,0,.6)}
 .table h2{font-family:Anton,sans-serif;text-transform:uppercase;font-size:clamp(22px,4vw,48px);margin:6px 0 clamp(12px,3vh,34px);text-align:center}
 .deck{display:flex;gap:clamp(8px,1.5vw,20px);flex-wrap:nowrap;justify-content:center}
-.fc{--w:min(200px,21vw,30vh);width:var(--w);height:calc(var(--w)*1.6);perspective:1000px;flex:none}
+.fc{--w:clamp(240px,34vmin,440px);width:var(--w);height:calc(var(--w)*1.5);aspect-ratio:2/3;perspective:1000px;flex:none}
 .fc-in{position:relative;width:100%;height:100%;transition:transform .7s cubic-bezier(.2,.8,.2,1),translate .2s;transform-style:preserve-3d;cursor:pointer}
 .fc.ready:not(.flipped):not(.dim) .fc-in:hover{translate:0 -14px}
 .fc.flipped .fc-in{transform:rotateY(180deg);cursor:default}
 .fc.dim{filter:brightness(.35)}
 .fc.chosen .front{border-color:var(--accent);box-shadow:0 0 34px rgba(212,255,58,.3)}
-.face{position:absolute;inset:0;border-radius:8px;backface-visibility:hidden;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;border:2px solid #333;text-align:center}
-.back{background:repeating-linear-gradient(45deg,#0b0b0b 0 10px,#121212 10px 20px)}
-.back .em{font-family:Anton,sans-serif;font-size:44px;color:#2c2c2c;border:2px solid #262626;padding:6px 14px}
-.back .tag{position:absolute;bottom:18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:.3em;color:#555}
+.face{position:absolute;inset:0;border-radius:8px;backface-visibility:hidden;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;border:2px solid #333;text-align:center}
+.back{position:relative;background:repeating-linear-gradient(45deg,#0b0b0b 0 10px,#121212 10px 20px);border-color:rgba(212,255,58,.2)}
+.back::before{content:"";position:absolute;inset:-20% -60%;background:linear-gradient(100deg,transparent 42%,rgba(212,255,58,.3) 50%,transparent 58%);animation:cardshine 2.4s linear infinite}
+.fc.ready:not(.flipped):not(.dim) .back{animation:backpulse 2.6s ease-in-out infinite}
+@keyframes cardshine{0%{transform:translateX(-45%)}100%{transform:translateX(45%)}}
+@keyframes backpulse{0%,100%{box-shadow:inset 0 0 0 1px rgba(212,255,58,.12),0 0 16px rgba(212,255,58,.08)}50%{box-shadow:inset 0 0 0 1px rgba(212,255,58,.35),0 0 28px rgba(212,255,58,.22)}}
+.back .em{position:relative;z-index:1;font-family:Anton,sans-serif;font-size:calc(var(--w)*.26);line-height:1;color:rgba(212,255,58,.6);border:3px solid rgba(212,255,58,.4);padding:.18em .32em;background:rgba(0,0,0,.45);border-radius:8px}
+.back .tag{position:relative;z-index:1;margin-top:18px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:calc(var(--w)*.032);letter-spacing:.3em;color:rgba(212,255,58,.55)}
 .front{background:#000;transform:rotateY(180deg);transition:border-color .3s,box-shadow .3s}
-.front::after{content:"";z-index:0;position:absolute;right:-10%;bottom:-6%;width:58%;height:78%;-webkit-mask:var(--mgricon) no-repeat center/contain;mask:var(--mgricon) no-repeat center/contain;background:currentColor;opacity:.09;pointer-events:none}
-.front .type{position:relative;z-index:1;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:11px;letter-spacing:.28em;margin-bottom:10px}
-.front h3{position:relative;z-index:1;color:#fff;font-family:Anton,sans-serif;text-transform:uppercase;font-size:calc(var(--w)*.105);line-height:1.04;margin-bottom:4px}
-.front p{position:relative;z-index:1;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:max(9.5px,calc(var(--w)*.057));margin-top:7px;line-height:1.3}
+.front::after{content:"";z-index:0;position:absolute;right:-12%;bottom:-6%;width:64%;height:84%;-webkit-mask:var(--mgricon) no-repeat center/contain;mask:var(--mgricon) no-repeat center/contain;background:currentColor;opacity:.14;pointer-events:none}
+.front .type{position:relative;z-index:1;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;letter-spacing:.26em;margin-bottom:10px}
+.front h3{position:relative;z-index:1;color:#fff;font-family:Anton,sans-serif;text-transform:uppercase;font-size:calc(var(--w)*.125);line-height:1.04;margin-bottom:5px}
+.front p{position:relative;z-index:1;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:max(11.5px,calc(var(--w)*.068));margin-top:7px;line-height:1.28}
 .front.goal{color:var(--mgmt);background:linear-gradient(160deg,#0a1420,#000);box-shadow:inset 0 0 40px rgba(90,168,255,.08)}
 .front.pos{color:var(--money);background:linear-gradient(160deg,#0a1f14,#000);box-shadow:inset 0 0 40px rgba(58,255,160,.08)}
 .front.neg{color:var(--bad);background:linear-gradient(160deg,#200a0a,#000);box-shadow:inset 0 0 40px rgba(255,90,90,.1)}
@@ -207,6 +221,42 @@ button{font-family:inherit;cursor:pointer}
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.9);display:none;align-items:center;justify-content:center;z-index:30;padding:20px}
 .ov.on{display:flex}
 .end{text-align:center;display:flex;flex-direction:column;align-items:center}
+.mandRecap{margin:14px 0;display:flex;flex-direction:column;gap:6px;width:min(420px,88vw)}
+.mandRecap .verdict{font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.12em;font-size:14px;text-transform:uppercase;margin-bottom:4px}
+.mandRecap .verdict.ok{color:var(--money)}
+.mandRecap .verdict.fail{color:var(--bad)}
+.mandRow{display:flex;justify-content:space-between;gap:10px;align-items:center;font-family:'Barlow Condensed',sans-serif;font-size:13px;text-transform:uppercase;letter-spacing:.03em;padding:7px 12px;border:1px solid #222;border-radius:4px;text-align:left}
+.mandRow b{color:#fff;font-weight:700}
+.mandRow .st{font-weight:800;flex:none}
+.mandRow .st.ok{color:var(--money)}
+.mandRow .st.fail{color:var(--bad)}
+.cardsBrowse{position:relative;display:flex;flex-direction:column;align-items:center;gap:16px;width:min(480px,92vw)}
+.cbtn.close{position:absolute;top:-14px;right:0;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.25);color:#fff;border-radius:50%;width:34px;height:34px;font-size:15px}
+.cbtn.close:hover{background:rgba(255,255,255,.18)}
+.browseRow{display:flex;align-items:center;gap:16px;width:100%;justify-content:center}
+.bigcard{position:relative;overflow:hidden;width:min(320px,70vw);min-height:380px;border-radius:12px;border:2px solid #333;background:#000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:26px;text-align:center;
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s}
+.bigcard.tiltR{transform:perspective(900px) rotateY(-8deg) translateX(-6px) scale(1.03);box-shadow:-18px 10px 40px rgba(0,0,0,.5)}
+.bigcard.tiltL{transform:perspective(900px) rotateY(8deg) translateX(6px) scale(1.03);box-shadow:18px 10px 40px rgba(0,0,0,.5)}
+.cz{position:absolute;top:0;bottom:0;width:50%;z-index:2;cursor:pointer}
+.cz.left{left:0}
+.cz.right{right:0}
+.cz.right::after,.cz.left::after{content:"";position:absolute;top:50%;width:0;height:0;border-top:9px solid transparent;border-bottom:9px solid transparent;opacity:0;transition:opacity .15s,right .15s,left .15s}
+.cz.right::after{right:12px;transform:translateY(-50%);border-left:11px solid rgba(255,255,255,.3)}
+.cz.left::after{left:12px;transform:translateY(-50%);border-right:11px solid rgba(255,255,255,.3)}
+.cz.right:hover::after{opacity:1;right:16px}
+.cz.left:hover::after{opacity:1;left:16px}
+.bigcard::after{content:"";z-index:0;position:absolute;right:-10%;bottom:-6%;width:60%;height:80%;-webkit-mask:var(--mgricon) no-repeat center/contain;mask:var(--mgricon) no-repeat center/contain;background:currentColor;opacity:.14;pointer-events:none}
+.bigcard .type{position:relative;z-index:1;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:13px;letter-spacing:.24em;margin-bottom:12px}
+.bigcard .camt{font-size:40px;margin-bottom:6px}
+.bigcard h3{position:relative;z-index:1;color:#fff;font-family:Anton,sans-serif;text-transform:uppercase;font-size:28px;line-height:1.05;margin-bottom:8px}
+.bigcard p{position:relative;z-index:1;color:var(--muted);font-family:'Barlow Condensed',sans-serif;font-weight:500;font-size:16px;line-height:1.35}
+.bigcard .goalp{position:relative;z-index:1;margin-top:14px;font-size:14px}
+.bigcard.goal{color:var(--mgmt);background:linear-gradient(160deg,#0a1420,#000)}
+.bigcard.pos{color:var(--money);background:linear-gradient(160deg,#0a1f14,#000)}
+.bigcard.neg{color:var(--bad);background:linear-gradient(160deg,#200a0a,#000)}
+.bigcard.drama{color:var(--spec);background:linear-gradient(160deg,#241607,#000)}
+.browseIdx{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.2em;color:var(--muted);font-size:12px;text-transform:uppercase}
 .end .big{font-family:Anton,sans-serif;font-size:clamp(100px,16vw,180px);line-height:1}
 .grade{font-family:'Barlow Condensed',sans-serif;font-weight:800;letter-spacing:.2em;font-size:16px;background:var(--accent);color:#000;padding:6px 16px;margin:10px 0 18px;text-transform:uppercase}
 .cmp{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:18px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:28px}.cmp b{color:#fff}
@@ -267,10 +317,24 @@ button{font-family:inherit;cursor:pointer}
 
 <!-- CARD TABLE -->
 <div class="table" id="table">
-  <div class="kicker cond" id="tableKick" style="font-weight:700"></div>
-  <h2 id="tableTitle">Pick a management card</h2>
-  <div class="deck" id="deck"></div>
-  <button class="gbtn p" id="tableBtn" onclick="closeTable()">Lock it in <span class="ar">▶</span></button>
+  <div class="tablePanel">
+    <div class="kicker cond" id="tableKick" style="font-weight:700"></div>
+    <h2 id="tableTitle">Pick a management card</h2>
+    <div class="deck" id="deck"></div>
+    <button class="gbtn p" id="tableBtn" onclick="closeTable()">Lock it in <span class="ar">▶</span></button>
+  </div>
+</div>
+
+<!-- CARDS BROWSER -->
+<div class="ov" id="cardsOv">
+  <div class="cardsBrowse">
+    <button class="cbtn close" onclick="closeCards()">✕</button>
+    <div class="kicker cond" style="font-weight:700">YOUR MANDATES</div>
+    <div class="browseRow">
+      <div class="bigcard" id="bigcard"></div>
+    </div>
+    <div class="browseIdx" id="browseIdx"></div>
+  </div>
 </div>
 
 <!-- END -->
@@ -279,6 +343,7 @@ button{font-family:inherit;cursor:pointer}
   <div class="big" id="endOvr"></div>
   <div class="grade" id="grade"></div>
   <p class="cmp" id="cmp"></p>
+  <div class="mandRecap" id="mandRecap"></div>
   <div style="display:flex;gap:12px">
     <button class="gbtn k" onclick="$('endOv').classList.remove('on')">View XI</button>
     <button class="gbtn s" onclick="openArchive()">Past challenges</button>
@@ -303,7 +368,8 @@ const SLOTS=[
 ];
 // order the game walks through: LW, ST, RW, CM, CDM, CM, LB, CB, CB, RB, GK
 const ORDER=[8,9,10,5,6,7,1,2,3,4,0];
-const CARD_AT=[0,6]; // draw a management card before these steps
+const CARD_AT=[0,3,6,9]; // draw a management card before these steps
+const CARD_LABELS=["BEFORE WE START","SQUAD TAKING SHAPE","HALFWAY THERE","FINAL STRETCH"];
 
 const sq=a=>a.map(x=>({name:x[0],ovr:x[1],val:x[2],nation:x[3]||""}));
 const CHALLENGES={
@@ -463,16 +529,26 @@ const P=[
 
 const MGMT=[
  // squad mandates - the club's actual footballing needs, told as a story. no money cards: every card is a commitment that shapes who you sign.
- {tag:"SQUAD IDENTITY",t:"Homegrown Push",d:"Fans and pundits keep hammering the club for losing its identity. The board wants more homegrown faces in the squad — sign at least 3 English players.",goal:{type:"nation",val:"England",need:3},kind:"goal"},
+ {tag:"SQUAD IDENTITY",t:"Homegrown Push",d:"Fans and pundits keep hammering the club for losing its identity. The board wants more homegrown faces in the squad. Sign at least 3 English players.",goal:{type:"nation",val:"England",need:3},kind:"goal"},
  {tag:"RECRUITMENT BRIEF",t:"Big-Game Experience",d:"Management is convinced this group freezes on the biggest nights. Sign at least 2 players with genuine Champions League pedigree.",goal:{type:"ucl",need:2},kind:"drama"},
  {tag:"DRESSING ROOM",t:"Leadership Needed",d:"The dressing room has gone quiet and the board wants senior voices back in it. Sign at least 2 players aged 32 or older.",goal:{type:"ageMin",val:32,need:2},kind:"drama"},
  {tag:"YOUTH POLICY",t:"Build For The Future",d:"Ownership is done paying for short-term fixes and wants the squad's average age heading the other way. Sign at least 2 players aged 23 or under.",goal:{type:"ageMax",val:23,need:2},kind:"pos"},
  {tag:"SCOUTING",t:"Widen The Net",d:"The recruitment team is tired of getting outbid recycling the same two leagues every window. Sign players from at least 3 different leagues.",goal:{type:"leagueSpread",need:3},kind:"goal"},
- {tag:"GAMBLE",t:"Project Signing",d:"The chief scout found one he can't stop talking about and wants the club to take the bet. Sign at least 1 player with real room to grow — potential at least 6 points above their current rating.",goal:{type:"potentialGap",val:6,need:1},kind:"pos"},
+ {tag:"GAMBLE",t:"Project Signing",d:"The chief scout found one he can't stop talking about and wants the club to take the bet. Sign at least 1 player with real room to grow, someone whose potential sits at least 6 points above their current rating.",goal:{type:"potentialGap",val:6,need:1},kind:"pos"},
  {tag:"TACTICAL NEED",t:"Shore Up The Defense",d:"The back line has leaked soft goals all season and the manager has had enough. Sign at least 2 defenders this window.",goal:{type:"posCount",val:"DEF",need:2},kind:"neg"},
  {tag:"TACTICAL NEED",t:"Control The Middle",d:"This team keeps getting overrun in the middle of the park and the manager wants it fixed now. Sign at least 2 midfielders this window.",goal:{type:"posCount",val:"MID",need:2},kind:"neg"},
  {tag:"TACTICAL NEED",t:"Firepower Needed",d:"Not enough goals are coming from open play and the fans are getting restless. Sign at least 2 forwards this window.",goal:{type:"posCount",val:"FWD",need:2},kind:"neg"},
  {tag:"AMBITION",t:"Make A Statement",d:"Ownership wants a marquee name the fans will actually notice, not another free transfer. Sign at least 1 player for £70M or more.",goal:{type:"priceMin",val:70,need:1},kind:"drama"},
+];
+const FINANCE=[
+ // boardroom money swings - good news and bad news, dealt on their own turns between mandates
+ {tag:"LUCKY BREAK",t:"A New Billionaire Owner!",d:"A wealthy businessman has just purchased the club. He's promised immediate investment to help take the team to the next level. Enjoy the extra transfer funds.",amt:75,kind:"pos"},
+ {tag:"FINANCIAL BOOST",t:"Record Sponsorship Deal!",d:"The club has signed a massive new sponsorship agreement with an international company. The extra revenue is available for transfers right now.",amt:40,kind:"pos"},
+ {tag:"UNEXPECTED BONUS",t:"Academy Wonderkid Sold!",d:"A rival club has activated the release clause of one of your academy graduates. The surprise sale brings a big profit straight into the transfer budget.",amt:25,kind:"pos"},
+ {tag:"BAD NEWS",t:"Financial Fair Play Investigation!",d:"The league has opened an investigation into the club's spending and handed down a hefty fine, eating straight into the transfer budget.",amt:-50,kind:"neg"},
+ {tag:"TRANSFER DRAMA",t:"Takeover Bid!",d:"An overseas investment group has approached the club with a takeover offer, promising a massive injection into the transfer budget.",amt:100,kind:"drama"},
+ {tag:"BOARDROOM PUSH",t:"Clear The Deadwood!",d:"The board wants fringe players moved on fast to free up wages. Every player you sell this window goes for 25% more.",sale:1.25,kind:"drama"},
+ {tag:"AGENT CONNECTIONS",t:"A Favour Called In!",d:"Your director of football has a contact at every major agency this week. Every signing this window costs 25% less.",price:.75,kind:"drama"},
 ];
 
 /* ---------- STORAGE ---------- */
@@ -513,7 +589,7 @@ function setBudget(v){
 }
 function startChallenge(key){
   const c=CHALLENGES[key];
-  S={key,c,budget:START_BUDGET,mgr:{...c.manager,orig:true},mgrSold:false,team:Array(11).fill(null),step:0,card:null,cardIdx:0,stage:"needCard",log:[],usedCards:[]};
+  S={key,c,budget:START_BUDGET,mgr:{...c.manager,orig:true},mgrSold:false,team:Array(11).fill(null),step:0,card:null,cardIdx:0,stage:"needCard",log:[],usedCards:[],cards:[],browseIdx:0};
   document.querySelectorAll(".clubn").forEach(e=>e.textContent=c.club);
   setBudget(START_BUDGET);
   show("mgrScr");renderMgr();
@@ -553,16 +629,18 @@ function renderPitch(){
 }
 function renderPanel(){
   const card=S.card;
+  const mandates=S.cards.filter(c=>c.goal),mandTotal=Math.ceil(CARD_AT.length/2),mandDone=mandates.filter(c=>goalProgress(c.goal).done).length;
   let h=`<div class="prow">
      <div class="mini"><small>MANAGER</small><b>${S.mgr.name}</b><span class="o">${S.mgr.ovr}</span></div>
    </div>
-   <div class="cardslot ${card?"has "+(card.kind||(card.goal?"goal":(card.amt<0?"neg":"pos"))):""}">${card?`<div class="t">${card.tag}</div><h4>${card.t}</h4><p>${card.d}</p>${card.amt?`<div class="camt ${card.amt<0?"neg":"pos"}">${card.amt<0?"−":"+"}£${Math.abs(card.amt)}M</div>`:""}${card.goal?`<div class="goalp ${S.goalDone?"done":""}">${S.goalDone?"✓ Mandate complete (+£15M)":goalLabel(card.goal)}</div>`:""}`:`<div class="empty">NO CARD YET</div>`}</div>
+   <div class="cardslot ${card?"has "+(card.kind||(card.goal?"goal":(card.amt<0?"neg":"pos"))):""}">${card?`<div class="t">${card.tag}</div><h4>${card.t}</h4><p>${card.d}</p>${card.amt?`<div class="camt ${card.amt<0?"neg":"pos"}">${card.amt<0?"−":"+"}£${Math.abs(card.amt)}M</div>`:""}${card.goal?goalStatusHtml(card.goal):""}`:`<div class="empty">NO CARD YET</div>`}</div>
+   <div class="mandBtn ${mandates.length?"":"off"}" onclick="openCards()"><div class="lbl">Your Mandates</div><div class="cnt">${mandDone} <small>/ ${mandTotal} complete</small></div></div>
    <div class="prog">${ORDER.map((_,i)=>`<i class="${i<S.step?"d":i===S.step?"c":""}"></i>`).join("")}</div>
    <div class="center" id="center"></div>`;
   $("panel").innerHTML=h;
   const c=$("center");
   if(S.stage==="needCard"){
-    c.innerHTML=`<div class="poslbl">${S.cardIdx===0?"BEFORE WE START":"HALFWAY THERE"}</div><button class="gbtn p" onclick="dealCards()">Select management card <span class="ar">▶</span></button>`;
+    c.innerHTML=`<div class="poslbl">${CARD_LABELS[S.cardIdx]||"NEXT ASSIGNMENT"}</div><button class="gbtn p" onclick="dealCards()">Select management card <span class="ar">▶</span></button>`;
   }else if(S.stage==="ready"){
     c.innerHTML=`<div class="poslbl">CARD LOCKED IN</div><button class="gbtn p" onclick="nextPos()">${S.step===0?"Start":"Continue"} <span class="ar">▶</span></button>`;
   }else if(S.stage==="pos"){
@@ -587,16 +665,20 @@ function renderPanel(){
 
 /* ---------- CARDS ---------- */
 function dealCards(){
+  const isFinance=S.cardIdx%2===1;
+  const remainPos=new Set(ORDER.slice(S.step).map(si=>SLOTS[si].pos));
+  const deck=isFinance?FINANCE:MGMT.filter(c=>!(c.goal&&c.goal.type==="posCount"&&!remainPos.has(c.goal.val)));
   const r=seeded(S.key+"cards"+S.cardIdx);
-  const opts=shuffleR(MGMT.filter(c=>!S.usedCards.includes(c.t)),r).slice(0,4);
+  const opts=shuffleR(deck.filter(c=>!S.usedCards.includes(c.t)),r).slice(0,4);
   S.deal=opts;
-  $("tableKick").textContent=`MANAGEMENT CARD ${S.cardIdx+1} OF ${CARD_AT.length}`;
+  const typeIdx=Math.floor(S.cardIdx/2)+1,typeTotal=Math.ceil(CARD_AT.length/2);
+  $("tableKick").textContent=`${isFinance?"FINANCE":"MANAGEMENT"} CARD ${typeIdx} OF ${typeTotal}`;
   $("tableTitle").textContent="Pick a card";
   $("deck").innerHTML=opts.map((c,i)=>{
     const kind=c.kind||(c.goal?"goal":(c.amt<0?"neg":"pos"));
     const amtHtml=c.amt?`<div class="camt ${c.amt<0?"neg":"pos"}">${c.amt<0?"−":"+"}£${Math.abs(c.amt)}M</div>`:"";
     return `<div class="fc" id="fc${i}"><div class="fc-in" onclick="chooseCard(${i})">
-     <div class="face back"><div class="em">XI</div><div class="tag">MANAGEMENT</div></div>
+     <div class="face back"><div class="em">${isFinance?"£":"XI"}</div><div class="tag">${isFinance?"FINANCE":"MANAGEMENT"}</div></div>
      <div class="face front ${kind}"><div class="type">${c.tag}</div>${amtHtml}<h3>${c.t}</h3><p>${c.d}</p></div></div></div>`;
   }).join("");
   $("tableBtn").style.visibility="hidden";
@@ -619,8 +701,8 @@ function chooseCard(i){
   if(S.stage==="ready"&&$("table").classList.contains("on")&&$("fc"+i).classList.contains("chosen"))return closeTable();
   if(S.stage!=="needCard")return;
   S.deal.forEach((_,j)=>{const e=$("fc"+j);e.style.transition="none";e.style.transform="none"}); // snap into place if still dealing
-  const c=S.deal[i];S.card=c;S.usedCards.push(c.t);S.stage="ready";S.cardIdx++;
-  S.goalCount=0;S.goalLeagues=new Set();S.goalDone=false;
+  const src=S.deal[i],c={...src};S.card=c;S.cards.push(c);S.usedCards.push(src.t);S.stage="ready";S.cardIdx++;
+  checkMandateBonuses();
   $("fc"+i).classList.add("flipped","chosen");
   $("tableTitle").textContent=c.t;
   setTimeout(()=>S.deal.forEach((_,j)=>{if(j!==i)$("fc"+j).classList.add("flipped","dim")}),700);
@@ -651,35 +733,63 @@ function makeOptions(si){
   return out;
 }
 function toggleStats(i){$("stats"+i).classList.toggle("open")}
+function newSignings(){return S.team.filter(p=>p&&p.kind==="new")}
+function goalProgress(g){
+  const signed=newSignings();
+  let count;
+  if(g.type==="leagueSpread")count=new Set(signed.map(p=>p.league)).size;
+  else count=signed.filter(p=>{
+    if(g.type==="nation")return p.nation===g.val;
+    if(g.type==="ucl")return !!p.ucl;
+    if(g.type==="ageMin")return p.age>=g.val;
+    if(g.type==="ageMax")return p.age<=g.val;
+    if(g.type==="potentialGap")return (p.pot-p.ovr)>=g.val;
+    if(g.type==="posCount")return p.pos===g.val;
+    if(g.type==="priceMin")return p.pricePaid>=g.val;
+    return false;
+  }).length;
+  return {count,need:g.need,done:count>=g.need};
+}
 function goalLabel(g){
-  if(g.type==="nation")return `${S.goalCount}/${g.need} ${g.val} signings`;
-  if(g.type==="ucl")return `${S.goalCount}/${g.need} Champions League signings`;
-  if(g.type==="ageMin")return `${S.goalCount}/${g.need} signings aged ${g.val}+`;
-  if(g.type==="ageMax")return `${S.goalCount}/${g.need} signings aged ${g.val} or under`;
-  if(g.type==="leagueSpread")return `${S.goalCount}/${g.need} different leagues signed from`;
-  if(g.type==="potentialGap")return `${S.goalCount}/${g.need} high-potential signings`;
-  if(g.type==="posCount")return `${S.goalCount}/${g.need} ${({DEF:"defender",MID:"midfielder",FWD:"forward"})[g.val]} signings`;
-  if(g.type==="priceMin")return `${S.goalCount}/${g.need} signings worth £${g.val}M+`;
+  const{count,need}=goalProgress(g);
+  if(g.type==="nation")return `${count}/${need} ${g.val} signings`;
+  if(g.type==="ucl")return `${count}/${need} Champions League signings`;
+  if(g.type==="ageMin")return `${count}/${need} signings aged ${g.val}+`;
+  if(g.type==="ageMax")return `${count}/${need} signings aged ${g.val} or under`;
+  if(g.type==="leagueSpread")return `${count}/${need} different leagues signed from`;
+  if(g.type==="potentialGap")return `${count}/${need} high-potential signings`;
+  if(g.type==="posCount")return `${count}/${need} ${({DEF:"defender",MID:"midfielder",FWD:"forward"})[g.val]} signings`;
+  if(g.type==="priceMin")return `${count}/${need} signings worth £${g.val}M+`;
   return "";
 }
-function checkGoal(p,pr){
-  const card=S.card;if(!card||!card.goal||S.goalDone)return;
-  const g=card.goal;
-  if(g.type==="leagueSpread"){S.goalLeagues.add(p.league);S.goalCount=S.goalLeagues.size}
-  else{
-    const hit=g.type==="nation"?p.nation===g.val
-      :g.type==="ucl"?p.ucl
-      :g.type==="ageMin"?p.age>=g.val
-      :g.type==="ageMax"?p.age<=g.val
-      :g.type==="potentialGap"?(p.pot-p.ovr)>=g.val
-      :g.type==="posCount"?p.pos===g.val
-      :g.type==="priceMin"?pr>=g.val
-      :false;
-    if(hit)S.goalCount++;
-  }
-  if(S.goalCount>=g.need){S.goalDone=true;setBudget(S.budget+15)}
+function goalStatusHtml(g){
+  const p=goalProgress(g);
+  return `<div class="goalp ${p.done?"done":""}">${p.done?"✓ Mandate complete (+£15M)":goalLabel(g)}</div>`;
 }
-function sign(i){const p=S.opts[i],si=ORDER[S.step],pr=price(p);setBudget(S.budget-pr);S.team[si]={...p,kind:"new"};checkGoal(p,pr);advance()}
+function checkMandateBonuses(){
+  S.cards.forEach(c=>{
+    if(c.goal&&!c.awarded&&goalProgress(c.goal).done){c.awarded=true;setBudget(S.budget+15)}
+  });
+}
+function mandateCards(){return S.cards.filter(c=>c.goal)}
+function openCards(){
+  const m=mandateCards();if(!m.length)return;
+  S.browseIdx=m.length-1;
+  renderCardsOv();
+  $("cardsOv").classList.add("on");
+}
+function closeCards(){$("cardsOv").classList.remove("on")}
+function cardNav(d){const m=mandateCards();if(!m.length)return;S.browseIdx=(S.browseIdx+d+m.length)%m.length;renderCardsOv()}
+function renderCardsOv(){
+  const m=mandateCards(),card=m[S.browseIdx];
+  if(!card)return;
+  $("bigcard").className="bigcard "+(card.kind||"goal");
+  const zones=m.length>1?`<div class="cz left" onclick="cardNav(-1)" onmouseenter="cardHover(-1)" onmouseleave="cardHover(0)"></div><div class="cz right" onclick="cardNav(1)" onmouseenter="cardHover(1)" onmouseleave="cardHover(0)"></div>`:"";
+  $("bigcard").innerHTML=`<div class="type">${card.tag}</div><h3>${card.t}</h3><p>${card.d}</p>${goalStatusHtml(card.goal)}${zones}`;
+  $("browseIdx").textContent=`MANDATE ${S.browseIdx+1} OF ${m.length}`;
+}
+function cardHover(d){const b=$("bigcard");if(!b)return;b.classList.toggle("tiltR",d===1);b.classList.toggle("tiltL",d===-1)}
+function sign(i){const p=S.opts[i],si=ORDER[S.step],pr=price(p);setBudget(S.budget-pr);S.team[si]={...p,kind:"new",pricePaid:pr};checkMandateBonuses();advance()}
 function useBench(){const si=ORDER[S.step];S.team[si]={...S.c.bench[si],kind:"bench"};advance()}
 function advance(){
   renderPitch();S.step++;
@@ -697,6 +807,13 @@ function finish(){
   $("endOvr").textContent=o;
   $("grade").textContent=o>=89?"Ballon d'Or squad":o>=87?"Champions League winners":o>=85?"Title contenders":o>=83?"Top four":"Rebuild the rebuild";
   $("cmp").innerHTML=`Original ${S.c.club} <b>${orig}</b> · Yours <b>${o}</b> (${o-orig>=0?"+":""}${o-orig}) · <b>£${S.budget}M</b> left`;
+  const mandates=S.cards.filter(c=>c.goal);
+  const failed=mandates.filter(c=>!goalProgress(c.goal).done).length;
+  const verdict=mandates.length?(failed===0?`<div class="verdict ok">✓ All mandates complete</div>`:`<div class="verdict fail">✗ ${failed} mandate${failed>1?"s":""} failed</div>`):"";
+  $("mandRecap").innerHTML=verdict+mandates.map(c=>{
+    const p=goalProgress(c.goal);
+    return `<div class="mandRow"><b>${c.t}</b><span class="st ${p.done?"ok":"fail"}">${p.done?"MET":"MISSED"}</span></div>`;
+  }).join("");
   $("endOv").classList.add("on");
 }
 </script>
